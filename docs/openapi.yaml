@@ -9,7 +9,7 @@ info:
   version: 1.0.0
 servers:
   # swagger-uiコンテナからbackendコンテナへのリクエスト
-  - url: http://backend:8080/api/v1
+  - url: http://localhost:8080/api/v1
 tags:
   - name: article
     description: 記事に関するエンドポイント
