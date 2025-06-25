@@ -1,3 +1,9 @@
+package handler
+
+import (
+	"log/slog"
+	"net/http"
+)
 
 type ArticleHandler struct {
 	logger *slog.Logger
@@ -6,7 +12,6 @@ type ArticleHandler struct {
 func NewArticleHandler(logger *slog.Logger) *ArticleHandler{
 	return &ArticleHandler{logger: logger}
 }
-
 
 // 記事一覧取得
 func (h *ArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) {
