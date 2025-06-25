@@ -24,4 +24,5 @@ func main() {
 	if err := http.ListenAndServe(":"+port, api); err != nil {
 		logger.Error("Server failed", "error", err)
 		os.Exit(1)  
-	}}
+	}
+}
