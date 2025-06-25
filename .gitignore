@@ -1,45 +1,37 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-### Spring Boot設定ファイル ###
-# **/application*.properties
-
-### その他の設定ファイル ###
+# 環境設定ファイル
 .env
 .env.*
-### .env.exampleはgit管理
+.env.local
 !.env.example
 
-### MacOS システムファイル ###
+# Go関連（バックエンド）
+*.exe
+*.test
+*.prof
+/backend/tmp/
+/tmp/
+
+# Node.js関連（フロントエンド）
+node_modules/
+npm-debug.log*
+
+# Next.js関連
+.next/
+out/
+build/
+dist/
+
+# IDE・エディタ
+.vscode/
+.idea/
+
+# OS生成ファイル
 .DS_Store
+._*
+
+# ログファイル
+*.log
+logs/
+
+# その他
+HELP.md
