@@ -33,7 +33,7 @@ func (h *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 
 // 記事詳細取得ハンドラー
 func (h *ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) {
-	h.localhost.Info("記事詳細取得リクエスト")
+	h.logger.Info("記事詳細取得リクエスト")
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"articles":[]}`))
