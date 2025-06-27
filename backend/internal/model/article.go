@@ -8,9 +8,9 @@ type Article struct {
 	UserId int64 `json:"authorId"`
 	Title string `json:"title"`
 	Body string `json:"body"`
-	ImageUrls []string `json:"imageUrls"`
 	LikeCount int `json:"likeCount"`
-	MvpCount int `json:"mvpCount`
+	StockCount int `json:"stockCount`
+	ImageUrls []string `json:"imageUrls"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
