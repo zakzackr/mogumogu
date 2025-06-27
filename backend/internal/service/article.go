@@ -16,7 +16,7 @@ func NewArticleService (articleRepo *repository.ArticleRepository) *ArticleServi
 	}
 }
 
-func (s *ArticleService) getArticleById(id int64) (*model.Article, error) {
+func (s *ArticleService) GetArticleById(id int64) (*model.Article, error) {
 	if id <= 0 {
 		return nil, errors.New("記事IDが適切ではありません。") 
 	}
