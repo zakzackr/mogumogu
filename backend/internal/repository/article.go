@@ -2,11 +2,14 @@ package repository
 
 import (
 	"database/sql"
+	"http"
 	"errors"
+
 	"github.com/zakzackr/ramen-blog/backend/internal/model" 
+	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors" 
 )
 
-ArticleRepository {
+type ArticleRepository struct{
 	db *sql.DB
 }
 
@@ -16,7 +19,7 @@ func NewArticleRepository(db *sql.DB) *ArticleRepository {
 	}
 }
 
-func (r *ArticleHandler) GerArticleById(id int64) (*model.Article, error) {
+func (r *ArticleRepository) GerArticleById(id int64) (*model.Article, error) {
 	//ゼロ値で初期化
 	article := &model.Article{}
 
@@ -42,7 +45,12 @@ func (r *ArticleHandler) GerArticleById(id int64) (*model.Article, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errors.New("記事が見つかりませんでした。")
+			return nil, apperrors.NewAppError(
+				"ARTICLE_NOT_FOUND",
+				"記事が見つかりませんでした。",
+				http.StatusNotFound,
+				err
+			)
 		}
 		return nil, err
 	}
