@@ -5,6 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/zakzackr/ramen-blog/backend/internal/middleware"
 )
 
 // App はラーメンブログプラットフォームのメインアプリケーション構造体です。
@@ -34,6 +36,7 @@ func New() *App {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	// ルーター作成
+	// ServeHttp()が、登録されたハンドラーを呼び出す
 	router := http.NewServeMux()
 
 	app := &App{
@@ -52,6 +55,8 @@ func New() *App {
 func (a *App) Logger() *slog.Logger {
 	return a.logger
 }
+
+// TODO: middlewareに移行
 
 // ServeHTTP はhttp.Handlerインターフェースを実装し、AppがHTTPリクエストを処理できるようにします。
 // 受信リクエストをログに記録し、内部ルーターに委譲します。
@@ -80,9 +85,12 @@ func (a *App) setupRoutes() {
 	articleHandler := handler.NewArticleHandler(a.logger)
 
 	// 基本的なルート設定
-	a.router.HandleFunc("GET /api/v1/articles", articleHandler.GetArticles)
-	a.router.HandleFunc("POST /api/v1/articles", articleHandler.CreateArticle)
-	// a.router.HandleFunc("GET /api/v1/articles/{id}", a.getArticle)
+	// Handle関数で、ハンドラーを登録する
+	// a.router.HandleFunc("GET /api/v1/articles", articleHandler.GetArticles)
+	// errorを返すため、Handle関数を使用
+	a.router.Handle("GET /api/v1/articles", middleware.AppHandler(articleHandler.GetArticles))
+	a.router.Handle("POST /api/v1/articles", middleware.AppHandler(articleHandler.CreateArticle))
+	a.router.Handle("GET /api/v1/articles/{id}", middleware.AppHandler(articleHandler.GetArticle))
 	// a.router.HandleFunc("PUT /api/v1/articles/{id}", a.updateArticle)
 	// a.router.HandleFunc("DELETE /api/v1/articles/{id}", a.deleteArticle)
 

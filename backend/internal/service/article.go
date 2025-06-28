@@ -1,8 +1,12 @@
 package service
 
-import {
+import (
+	"http"
+	
+	"github.com/zakzackr/ramen-blog/backend/internal/model" 
 	"github.com/zakzackr/ramen-blog/backend/internal/repository" 
-}
+	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors" 
+)
 
 type ArticleService struct {
 	// DI
@@ -16,10 +20,20 @@ func NewArticleService (articleRepo *repository.ArticleRepository) *ArticleServi
 	}
 }
 
-func (s *ArticleService) GetArticleById(id int64) (*model.Article, error) {
+func (s *ArticleService) GetArticleById(id int64) (*model.Article, *AppError) {
 	if id <= 0 {
-		return nil, errors.New("記事IDが適切ではありません。") 
+		return nil, apperrors.NewAppError(
+			"INVALID_ARTICLE_ID",
+			"記事IDが適切ではありません。",
+			http.StatusBadRequest,
+			nil
+		)
 	}
 
-	return s.articleRepo.getArticleById(id)
+	article, err := s.articleRepo.getArticleById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return article, nil
 }
