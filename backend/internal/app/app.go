@@ -13,8 +13,8 @@ import (
 	"github.com/zakzackr/ramen-blog/backend/internal/service"
 )
 
-// App はラーメンブログプラットフォームのメインアプリケーション構造体です。
-// ルーター、設定、ログ機能を含みます。
+// App はラーメンブログプラットフォームのメインアプリケーション構造体。
+// ルーター、設定、ログ機能を含む。
 type App struct {
 	router *http.ServeMux
 	config *Config
@@ -22,10 +22,11 @@ type App struct {
 	db     *sql.DB
 }
 
-// Config はポート番号とベースURLを含むアプリケーション設定を保持します。
+// Config はポート番号とベースURLを含むアプリケーション設定を保持する。
 type Config struct {
-	port    string
-	baseURL string
+	port        string
+	baseURL     string
+	databaseURL string
 }
 
 // New は新しいAppインスタンスをデフォルト設定で作成・初期化する。
@@ -33,8 +34,9 @@ type Config struct {
 func New() *App {
 	// デフォルト設定
 	config := &Config{
-		port:    getEnv("SERVER_PORT", "8080"),
-		baseURL: getEnv("API_BASE_URL", "http://localhost:8080"),
+		port:        getEnv("SERVER_PORT", "8080"),
+		baseURL:     getEnv("API_BASE_URL", "http://localhost:8080"),
+		databaseURL: getEnv("DATABASE_URL", "postgres://user:pass@localhost/my-database"),
 	}
 
 	// 構造化ログの設定
@@ -45,11 +47,12 @@ func New() *App {
 	router := http.NewServeMux()
 
 	// DB接続
-	db, err := sql.Open("postgres", "postgres://user:pass@localhost/my-database")
+	db, err := sql.Open("postgres", config.databaseURL)
 	if err != nil {
 		logger.Fatal("Failed to connect to database:", err)
 	}
 
+	// DB接続の成功を確認
 	if err := db.Ping(); err != nil {
 		logger.Fatal("Failed to ping database:", err)
 	}
@@ -97,7 +100,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // setupRoutes はラーメンブログAPIエンドポイントのすべてのHTTPルートを設定します。
 func (a *App) setupRoutes() {
-	// ハンドラー初期化
+	// DI
 	articleRepository := repository.NewArticleRepository(a.db)
 	articleService := service.NewArticleService(articleRepository)
 	articleHandler := handler.NewArticleHandler(articleService, a.logger)
