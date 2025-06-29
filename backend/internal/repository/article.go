@@ -2,24 +2,23 @@ package repository
 
 import (
 	"database/sql"
-	"http"
-	"errors"
+	"net/http"
 
-	"github.com/zakzackr/ramen-blog/backend/internal/model" 
-	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors" 
+	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors"
+	"github.com/zakzackr/ramen-blog/backend/internal/model"
 )
 
-type ArticleRepository struct{
+type ArticleRepository struct {
 	db *sql.DB
 }
 
 func NewArticleRepository(db *sql.DB) *ArticleRepository {
 	return &ArticleRepository{
-		db: db
+		db: db,
 	}
 }
 
-func (r *ArticleRepository) GerArticleById(id int64) (*model.Article, error) {
+func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
 	//ゼロ値で初期化
 	article := &model.Article{}
 
@@ -40,7 +39,7 @@ func (r *ArticleRepository) GerArticleById(id int64) (*model.Article, error) {
 		&article.StockCount,
 		&article.ImageUrls,
 		&article.CreatedAt,
-		&article.UpdatedAt
+		&article.UpdatedAt,
 	)
 
 	if err != nil {
@@ -49,10 +48,15 @@ func (r *ArticleRepository) GerArticleById(id int64) (*model.Article, error) {
 				"ARTICLE_NOT_FOUND",
 				"記事が見つかりませんでした。",
 				http.StatusNotFound,
-				err
+				err,
 			)
 		}
-		return nil, err
+		return nil, apperrors.NewAppError(
+			"DATABASE_ERROR",
+			"データベースエラーが発生しました",
+			http.StatusInternalServerError,
+			err,
+		)
 	}
 
 	return article, nil

@@ -2,11 +2,15 @@
 package app
 
 import (
+	"database/sql"
 	"log/slog"
 	"net/http"
 	"os"
 
+	"github.com/zakzackr/ramen-blog/backend/internal/handler"
 	"github.com/zakzackr/ramen-blog/backend/internal/middleware"
+	"github.com/zakzackr/ramen-blog/backend/internal/repository"
+	"github.com/zakzackr/ramen-blog/backend/internal/service"
 )
 
 // App はラーメンブログプラットフォームのメインアプリケーション構造体です。
@@ -15,6 +19,7 @@ type App struct {
 	router *http.ServeMux
 	config *Config
 	logger *slog.Logger
+	db     *sql.DB
 }
 
 // Config はポート番号とベースURLを含むアプリケーション設定を保持します。
@@ -23,8 +28,8 @@ type Config struct {
 	baseURL string
 }
 
-// New は新しいAppインスタンスをデフォルト設定で作成・初期化します。
-// 構造化ログ、HTTPルーティングを設定し、使用可能なAppを返します。
+// New は新しいAppインスタンスをデフォルト設定で作成・初期化する。
+// ログ、HTTPルーティングを設定し、使用可能なAppを返す。
 func New() *App {
 	// デフォルト設定
 	config := &Config{
@@ -39,10 +44,21 @@ func New() *App {
 	// ServeHttp()が、登録されたハンドラーを呼び出す
 	router := http.NewServeMux()
 
+	// DB接続
+	db, err := sql.Open("postgres", "postgres://user:pass@localhost/my-database")
+	if err != nil {
+		logger.Fatal("Failed to connect to database:", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		logger.Fatal("Failed to ping database:", err)
+	}
+
 	app := &App{
 		router: router,
 		config: config,
 		logger: logger,
+		db:     db,
 	}
 
 	// ルートを設定
@@ -64,8 +80,8 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// リクエストログ
 	a.logger.Info("Request", "method", r.Method, "path", r.URL.Path)
 
-	// CORS設定                                                    
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8081")   
+	// CORS設定
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8081")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -82,14 +98,16 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // setupRoutes はラーメンブログAPIエンドポイントのすべてのHTTPルートを設定します。
 func (a *App) setupRoutes() {
 	// ハンドラー初期化
-	articleHandler := handler.NewArticleHandler(a.logger)
+	articleRepository := repository.NewArticleRepository(a.db)
+	articleService := service.NewArticleService(articleRepository)
+	articleHandler := handler.NewArticleHandler(articleService, a.logger)
 
 	// 基本的なルート設定
 	// Handle関数で、ハンドラーを登録する
 	// a.router.HandleFunc("GET /api/v1/articles", articleHandler.GetArticles)
 	// errorを返すため、Handle関数を使用
-	a.router.Handle("GET /api/v1/articles", middleware.AppHandler(articleHandler.GetArticles))
-	a.router.Handle("POST /api/v1/articles", middleware.AppHandler(articleHandler.CreateArticle))
+	// a.router.Handle("GET /api/v1/articles", middleware.AppHandler(articleHandler.GetArticles))
+	// a.router.Handle("POST /api/v1/articles", middleware.AppHandler(articleHandler.CreateArticle))
 	a.router.Handle("GET /api/v1/articles/{id}", middleware.AppHandler(articleHandler.GetArticle))
 	// a.router.HandleFunc("PUT /api/v1/articles/{id}", a.updateArticle)
 	// a.router.HandleFunc("DELETE /api/v1/articles/{id}", a.deleteArticle)
@@ -105,4 +123,3 @@ func getEnv(key, defaultValue string) string {
 	}
 	return defaultValue
 }
-

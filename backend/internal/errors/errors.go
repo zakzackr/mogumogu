@@ -7,10 +7,10 @@ import (
 
 // アプリケーション内部で使用されるカスタムエラー
 type AppError struct {
-	Code string `json:"code"`
+	Code    string `json:"code"`
 	Message string `json:"message"`
-	Status int `json:"-"`
-	Err error  `json:"-"`
+	Status  int    `json:"-"`
+	Err     error  `json:"-"`
 }
 
 // errorインターフェースを実装
@@ -23,31 +23,30 @@ func (e *AppError) Error() string {
 
 // コンストラクタ
 func NewAppError(code, message string, status int, err error) *AppError {
-	return &AppError {
-		Code: code,
+	return &AppError{
+		Code:    code,
 		Message: message,
-		Status: status,
-		Err: err
+		Status:  status,
+		Err:     err,
 	}
 }
 
-// Unwrap はエラーチェーンをサポートします                              
-// func (e *AppError) Unwrap() error {                                
+// Unwrap はエラーチェーンをサポートします
+// func (e *AppError) Unwrap() error {
 //     return e.Err
 // }
 
 // func NewNotFoundError(message string) *AppError {
 // 	return &AppError {
-// 		Code: 
+// 		Code:
 // 	}
 // }
 
-
 // よく使用されるエラー
 var (
-	ErrArticleNotFound = &AppError {
-		Code: "ARTICLE_NOT_FOUND",
+	ErrArticleNotFound = &AppError{
+		Code:    "ARTICLE_NOT_FOUND",
 		Message: "記事が見つかりませんでした。",
-		Status: http.StatusNotFound
+		Status:  http.StatusNotFound,
 	}
 )
