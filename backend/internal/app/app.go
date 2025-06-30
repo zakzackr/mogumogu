@@ -109,8 +109,8 @@ func (a *App) setupRoutes() {
 	// Handle関数で、ハンドラーを登録する
 	// a.router.HandleFunc("GET /api/v1/articles", articleHandler.GetArticles)
 	// errorを返すため、Handle関数を使用
-	// a.router.Handle("GET /api/v1/articles", middleware.AppHandler(articleHandler.GetArticles))
-	// a.router.Handle("POST /api/v1/articles", middleware.AppHandler(articleHandler.CreateArticle))
+	a.router.Handle("GET /api/v1/articles", middleware.AppHandler(articleHandler.GetArticles))
+	a.router.Handle("POST /api/v1/articles", middleware.AppHandler(articleHandler.CreateArticle))
 	a.router.Handle("GET /api/v1/articles/{id}", middleware.AppHandler(articleHandler.GetArticle))
 	// a.router.HandleFunc("PUT /api/v1/articles/{id}", a.updateArticle)
 	// a.router.HandleFunc("DELETE /api/v1/articles/{id}", a.deleteArticle)

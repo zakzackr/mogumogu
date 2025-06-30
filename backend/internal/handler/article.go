@@ -39,16 +39,6 @@ func (h *ArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) err
 	return json.NewEncoder(w).Encode(map[string][]*model.ArticleListItem{"articles": articles})
 }
 
-// // 記事投稿ハンドラー
-// func (h *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
-// 	h.logger.Info("記事投稿リクエスト")
-// 	w.Header().Set("Content-type", "application/json")
-// 	// Write()がWriteHeader(http.StatusOK)を自動で呼ぶから、その前に明示的に呼び出す。
-// 	w.WriteHeader(http.StatusCreated)
-// 	// TODO: 配列ではなくarticleをセット
-// 	w.Write([]byte(`{"articles":[]}`))
-// }
-
 // 記事詳細取得ハンドラー
 func (h *ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) error {
 	h.logger.Info("記事詳細取得リクエスト")
@@ -75,5 +65,31 @@ func (h *ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) erro
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	// json.Encode()時のエラーもグローバルハンドラーで処理
+	return json.NewEncoder(w).Encode(article)
+}
+
+// 記事作成ハンドラー
+func (h *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) error {
+	h.logger.Info("記事投稿リクエスト")
+
+	authorId := int64(1)
+	var req model.CreateArticleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return apperrors.NewAppError(
+			"INVALID_JSON",
+			"JSONが無効です",
+			http.StatusBadRequest,
+			err,
+		)
+	}
+
+	article, err := h.articleService.CreateArticle(&req, authorId)
+	if err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	// Write()がWriteHeader(http.StatusOK)を自動で呼ぶから、その前に明示的に呼び出す。
+	w.WriteHeader(http.StatusCreated)
 	return json.NewEncoder(w).Encode(article)
 }

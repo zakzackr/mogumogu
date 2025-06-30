@@ -27,8 +27,9 @@ type ArticleListItem struct {
 	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
-// リクエスト用のArticleデータ
-type CreateArticle struct {
+// 記事投稿用のArticleデータ
+type CreateArticleRequest struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
+	// ImageUrls  []string  `json:"imageUrls, omitempty""`
 }
