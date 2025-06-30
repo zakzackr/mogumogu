@@ -54,3 +54,17 @@ func (s *ArticleService) GetArticleById(id int64) (*model.Article, *apperrors.Ap
 
 	return article, nil
 }
+
+// 記事の作成
+func (s *ArticleService) CreateArticle(req *model.CreateArticleRequest, authorId int64) (*model.Article, *apperrors.AppError) {
+	s.logger.Info("記事作成取得サービス開始")
+
+	article, err := s.articleRepo.CreateArticle(req, authorId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	s.logger.Info("記事作成取得サービス開始", "articleID", article.ID)
+	return article, nil
+}

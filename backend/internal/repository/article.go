@@ -140,3 +140,46 @@ func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors
 
 	return article, nil
 }
+
+// 記事の作成
+func (r *ArticleRepository) CreateArticle(req *model.CreateArticleRequest, authorId int64) (*model.Article, *apperrors.AppError) {
+	r.logger.Info("記事作成開始", "title", req.Title, "authorId", authorId)
+
+	//ゼロ値で初期化
+	article := &model.Article{}
+
+	// queryの作成
+	query := `
+		INSERT INTO articles(author_id, title, body)
+		VALUES ($1, $2, $3, $4)
+		RETURNING id, author_id, title, body, like_count, stock_count, image_urls, created_at, updated_at
+	`
+
+	row := r.db.QueryRow(query, authorId, req.Title, req.Body)
+	err := row.Scan(
+		&article.ID,
+		&article.UserId,
+		&article.Title,
+		&article.Body,
+		&article.LikeCount,
+		&article.StockCount,
+		&article.ImageUrls,
+		&article.CreatedAt,
+		&article.UpdatedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			r.logger.Error("記事作成エラー", "error", err)
+			return nil, apperrors.NewAppError(
+				"CREATE_ARTICLE_ERROR",
+				"記事の作成に失敗しました",
+				http.StatusInternalServerError,
+				err,
+			)
+		}
+	}
+
+	r.logger.Info("記事作成完了", "articleId", article.ID)
+	return article, nil
+}
