@@ -29,7 +29,7 @@ type Config struct {
 	databaseURL string
 }
 
-// New は新しいAppインスタンスをデフォルト設定で作成・初期化する。
+// New は新しいAppインスタンスを作成・初期化する。
 // ログ、HTTPルーティングを設定し、使用可能なAppを返す。
 func New() *App {
 	// デフォルト設定
