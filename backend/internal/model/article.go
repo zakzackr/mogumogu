@@ -2,12 +2,24 @@ package model
 
 import "time"
 
-// DB保存用のArticleデータ
+// 記事詳細用のArticleデータ
 type Article struct {
 	ID         int64     `json:"id"`
 	UserId     int64     `json:"authorId"`
 	Title      string    `json:"title"`
 	Body       string    `json:"body"`
+	LikeCount  int       `json:"likeCount"`
+	StockCount int       `json:"stockCount"`
+	ImageUrls  []string  `json:"imageUrls"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+// 記事一覧用のArticleデータ
+type ArticleListItem struct {
+	ID         int64     `json:"id"`
+	UserId     int64     `json:"authorId"`
+	Title      string    `json:"title"`
 	LikeCount  int       `json:"likeCount"`
 	StockCount int       `json:"stockCount"`
 	ImageUrls  []string  `json:"imageUrls"`

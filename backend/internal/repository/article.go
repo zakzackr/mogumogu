@@ -21,6 +21,81 @@ func NewArticleRepository(db *sql.DB, logger *slog.Logger) *ArticleRepository {
 	}
 }
 
+// 記事一覧の取得
+func (r *ArticleRepository) GetArticles() ([]*model.ArticleListItem, *apperrors.AppError) {
+	r.logger.Info("記事一覧取得開始")
+
+	//ゼロ値で初期化
+	var articles []*model.ArticleListItem
+
+	// queryを作成
+	query := `
+		SELECT id, author_id, title, like_count, stock_count, image_urls, created_at, updated_at
+		From articles
+	`
+	rows, err := r.db.Query(query)
+	if err != nil {
+		r.logger.Error("クエリ実行エラー", "error", err, "query", query)
+		return nil, apperrors.NewAppError(
+			"DATABASE_ERROR",
+			"データベースエラーが発生しました",
+			http.StatusInternalServerError,
+			err,
+		)
+	}
+
+	// 重要：リソースリーク防止
+	// rows.Next()終了時に正常終了時に自動でCloseされるが、エラー終了時用に明示的にCloseを行う
+	defer rows.Close()
+
+	// 各レコードをループして取得
+	for rows.Next() {
+		article := &model.ArticleListItem{}
+
+		// (*Rows) Scanは現在のレコードの値をターゲットにコピーする
+		err := rows.Scan(
+			&article.ID,
+			&article.UserId,
+			&article.Title,
+			&article.LikeCount,
+			&article.StockCount,
+			&article.ImageUrls,
+			&article.CreatedAt,
+			&article.UpdatedAt,
+		)
+
+		// Scan中のエラーを確認する
+		if err != nil {
+			r.logger.Error("行処理エラー", "error", err)
+			return nil, apperrors.NewAppError(
+				"SCAN_ERROR",
+				"データの読み取りに失敗しました",
+				http.StatusInternalServerError,
+				err,
+			)
+		}
+
+		articles = append(articles, article)
+	}
+
+	// ループ終了後：falseの原因を確認
+	// 正常：次に読む行が存在しない
+	// エラー：ループ中にエラーが発生
+	// エラーの場合はエラーハンドリングを行う
+	if err := rows.Err(); err != nil {
+		return nil, apperrors.NewAppError(
+			"ROWS_ERROR",
+			"行の処理中にエラーが発生しました",
+			http.StatusInternalServerError,
+			err,
+		)
+	}
+
+	// 正常終了
+	r.logger.Info("記事一覧取得完了")
+	return articles, nil
+}
+
 // 記事詳細の取得
 func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
 	//ゼロ値で初期化

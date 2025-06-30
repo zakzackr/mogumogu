@@ -23,6 +23,18 @@ func NewArticleService(articleRepo *repository.ArticleRepository, logger *slog.L
 	}
 }
 
+// 記事一覧の取得
+func (s *ArticleService) GetArticles() ([]*model.ArticleListItem, *apperrors.AppError) {
+	s.logger.Info("記事一覧取得サービス開始")
+	articles, err := s.articleRepo.GetArticles()
+	if err != nil {
+		return nil, err
+	}
+
+	s.logger.Info("記事一覧取得サービス完了", "count", len(articles))
+	return articles, nil
+}
+
 // 記事詳細の取得
 func (s *ArticleService) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
 	// idのvalidation
