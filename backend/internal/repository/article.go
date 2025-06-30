@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"log/slog"
 	"net/http"
 
 	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors"
@@ -9,12 +10,14 @@ import (
 )
 
 type ArticleRepository struct {
-	db *sql.DB
+	db     *sql.DB
+	logger *slog.Logger
 }
 
-func NewArticleRepository(db *sql.DB) *ArticleRepository {
+func NewArticleRepository(db *sql.DB, logger *slog.Logger) *ArticleRepository {
 	return &ArticleRepository{
-		db: db,
+		db:     db,
+		logger: logger,
 	}
 }
 
