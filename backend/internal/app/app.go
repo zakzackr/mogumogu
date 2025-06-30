@@ -13,8 +13,8 @@ import (
 	"github.com/zakzackr/ramen-blog/backend/internal/service"
 )
 
-// App はラーメンブログプラットフォームのメインアプリケーション構造体。
-// ルーター、設定、ログ機能を含む。
+// App はメインアプリケーション構造体。
+// ルーター、設定、ログ、データベースを含む。
 type App struct {
 	router *http.ServeMux
 	config *Config
@@ -22,7 +22,7 @@ type App struct {
 	db     *sql.DB
 }
 
-// Config はポート番号とベースURLを含むアプリケーション設定を保持する。
+// Config はポート番号とベースURL、データベースURLを含むアプリケーション設定を保持する。
 type Config struct {
 	port        string
 	baseURL     string
@@ -30,7 +30,7 @@ type Config struct {
 }
 
 // New は新しいAppインスタンスを作成・初期化する。
-// ログ、HTTPルーティングを設定し、使用可能なAppを返す。
+// ログ、HTTPルーティング、DB接続を設定し、使用可能なAppを返す。
 func New() *App {
 	// デフォルト設定
 	config := &Config{

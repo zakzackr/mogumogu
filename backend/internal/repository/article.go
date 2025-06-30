@@ -21,6 +21,7 @@ func NewArticleRepository(db *sql.DB, logger *slog.Logger) *ArticleRepository {
 	}
 }
 
+// 記事詳細の取得
 func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
 	//ゼロ値で初期化
 	article := &model.Article{}

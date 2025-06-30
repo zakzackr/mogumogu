@@ -23,7 +23,9 @@ func NewArticleService(articleRepo *repository.ArticleRepository, logger *slog.L
 	}
 }
 
+// 記事詳細の取得
 func (s *ArticleService) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
+	// idのvalidation
 	if id <= 0 {
 		return nil, apperrors.NewAppError(
 			"INVALID_ARTICLE_ID",
