@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors"
+	"github.com/zakzackr/ramen-blog/backend/internal/model"
 	"github.com/zakzackr/ramen-blog/backend/internal/service"
 )
 
@@ -24,12 +25,19 @@ func NewArticleHandler(articleService *service.ArticleService, logger *slog.Logg
 }
 
 // 記事一覧取得ハンドラー
-// func (h *ArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) {
-// 	h.logger.Info("記事一覧取得リクエスト")
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// 	w.Write([]byte(`{"articles":[]}`))
-// }
+func (h *ArticleHandler) GetArticles(w http.ResponseWriter, r *http.Request) error {
+	h.logger.Info("記事一覧取得リクエスト")
+
+	articles, err := h.articleService.GetArticles()
+	if err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	return json.NewEncoder(w).Encode(map[string][]*model.ArticleListItem{"articles": articles})
+}
 
 // // 記事投稿ハンドラー
 // func (h *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
@@ -50,8 +58,12 @@ func (h *ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) erro
 	id, err := strconv.ParseInt(idStr, 10, 64)
 
 	if err != nil {
-		return apperrors.NewAppError("INVALID_ARTICLE_ID", "記事IDが無効です",
-			http.StatusBadRequest, err)
+		return apperrors.NewAppError(
+			"INVALID_ARTICLE_ID",
+			"記事IDが無効です",
+			http.StatusBadRequest,
+			err,
+		)
 	}
 
 	// 記事詳細取得サービス関数の呼び出し
