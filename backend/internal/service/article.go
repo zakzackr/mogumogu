@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log/slog"
 	"net/http"
 
 	apperrors "github.com/zakzackr/ramen-blog/backend/internal/errors"
@@ -11,12 +12,14 @@ import (
 type ArticleService struct {
 	// DI
 	articleRepo *repository.ArticleRepository
+	logger      *slog.Logger
 }
 
 // コンストラクタ
-func NewArticleService(articleRepo *repository.ArticleRepository) *ArticleService {
+func NewArticleService(articleRepo *repository.ArticleRepository, logger *slog.Logger) *ArticleService {
 	return &ArticleService{
 		articleRepo: articleRepo,
+		logger:      logger,
 	}
 }
 
