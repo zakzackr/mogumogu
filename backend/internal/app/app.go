@@ -1,4 +1,4 @@
-// Package app はラーメンブログプラットフォームのメインアプリケーション構造体とHTTPサーバーを提供します。
+// Package app はラーメンブログのメインアプリケーション構造体とHTTPサーバーを提供する。
 package app
 
 import (
@@ -79,8 +79,8 @@ func (a *App) Logger() *slog.Logger {
 
 // TODO: middlewareに移行
 
-// ServeHTTP はhttp.Handlerインターフェースを実装し、AppがHTTPリクエストを処理できるようにします。
-// 受信リクエストをログに記録し、内部ルーターに委譲します。
+// ServeHTTP はhttp.Handlerインターフェースを実装し、AppがHTTPリクエストを処理できるようにする。
+// 受信リクエストをログに記録し、内部ルーターに委譲する。
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// リクエストログ
 	a.logger.Info("Request", "method", r.Method, "path", r.URL.Path)
@@ -100,7 +100,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.router.ServeHTTP(w, r)
 }
 
-// setupRoutes はラーメンブログAPIエンドポイントのすべてのHTTPルートを設定します。
+// setupRoutes はラーメンブログAPIエンドポイントのすべてのHTTPルートを設定する。
 func (a *App) setupRoutes() {
 	// DI
 	articleRepository := repository.NewArticleRepository(a.db, a.logger)
@@ -121,7 +121,7 @@ func (a *App) setupRoutes() {
 	// a.router.HandleFunc("/api/v1/auth/register", a.handleRegister)
 }
 
-// getEnv は環境変数の値を取得するか、設定されていない場合はデフォルト値を返します。
+// getEnv は環境変数の値を取得するか、設定されていない場合はデフォルト値を返す。
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
