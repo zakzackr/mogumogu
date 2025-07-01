@@ -1,16 +1,18 @@
 services:
   db:
-    image: mysql:8.0
+    image: postgres:15
+    container_name: ramen_blog_db 
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
     env_file:
       - .env
     ports:
-      - "${MYSQL_PORT:-3306}:3306"
+      - "${POSTGRES_PORT:-5432}:5432"
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+    container_name: ramen_blog_backend
     volumes:
       - ./backend:/app
     ports:

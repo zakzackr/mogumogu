@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/lib/pq"
+
 	"github.com/zakzackr/ramen-blog/backend/internal/handler"
 	"github.com/zakzackr/ramen-blog/backend/internal/middleware"
 	"github.com/zakzackr/ramen-blog/backend/internal/repository"
@@ -35,8 +37,8 @@ func New() *App {
 	// デフォルト設定
 	config := &Config{
 		port:        getEnv("SERVER_PORT", "8080"),
-		baseURL:     getEnv("API_BASE_URL", "http://localhost:8080"),
-		databaseURL: getEnv("DATABASE_URL", "postgres://user:pass@localhost/my-database"),
+		baseURL:     getEnv("API_BASE_URL", "http://localhost:8080/api/v1"),
+		databaseURL: getEnv("DATABASE_URL", "postgres://user:password@db:5432/ramen_blog?sslmode=disable"),
 	}
 
 	// 構造化ログの設定
