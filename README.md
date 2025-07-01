@@ -31,6 +31,8 @@
 │   ├── src/             # ソースコード
 │   ├── package.json     # フロントエンド依存管理ファイル
 │   └── Dockerfile.dev   # 開発用Dockerfile
+├── db/                  # データベース関連
+│   └── migrations/      # マイグレーションファイル
 ├── docs/                # ドキュメント保管用のディレクトリ
 │   ├── openapi.yml      # API仕様書（OpenAPI形式）
 │   ├── requirements.md  # 設計ドキュメント
