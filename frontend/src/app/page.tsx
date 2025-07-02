@@ -16,48 +16,58 @@ import jwt, { JwtPayload } from "jsonwebtoken";
  */
 export default async function Home() {
     // Cookieからアクセストークンを取得
-    const cookieStore = await cookies();
-    const token = cookieStore.get("accessToken");
+    // const cookieStore = await cookies();
+    // const token = cookieStore.get("accessToken");
     
     // 認証済みでない場合は、login画面に遷移
-    if (!token) {
-        redirect("/login");
-    }
+    // if (!token) {
+    //     redirect("/login");
+    // }
     
     // 秘密鍵のデコード
-    const jwtSecret = Buffer.from(process.env.JWT_SECRET!, "base64"); 
+    // const jwtSecret = Buffer.from(process.env.JWT_SECRET!, "base64"); 
     
-    let decoded: JwtPayload;
-    try {
-        // JWTの検証
-        decoded = jwt.verify(token.value, jwtSecret!) as JwtPayload;
-    } catch (error: unknown) {
-        // JWTの検証に失敗した場合はlogin画面に遷移
-        redirect("/login");
-    }
+    // let decoded: JwtPayload;
+    // try {
+    //     // JWTの検証
+    //     decoded = jwt.verify(token.value, jwtSecret!) as JwtPayload;
+    // } catch (error: unknown) {
+    //     // JWTの検証に失敗した場合はlogin画面に遷移
+    //     redirect("/login");
+    // }
 
-    let role: string | undefined = undefined;
-    let username: string | undefined = undefined;
+    // let role: string | undefined = undefined;
+    // let username: string | undefined = undefined;
 
-    if (typeof decoded === "object"){
-        // JWTからユーザーの権限を取得
-        if ("role" in decoded) {
-            role = decoded.role as string;
-        }
+    // if (typeof decoded === "object"){
+    //     // JWTからユーザーの権限を取得
+    //     if ("role" in decoded) {
+    //         role = decoded.role as string;
+    //     }
 
-        // JWTからユーザーの権限を取得
-        if ("sub" in decoded){
-            username = decoded.sub as string;
-        }
-    }
+    //     // JWTからユーザーの権限を取得
+    //     if ("sub" in decoded){
+    //         username = decoded.sub as string;
+    //     }
+    // }
 
   	// 記事一覧を取得
-	const articles = await fetchArticles(token.value);
+	// const articles = await fetchArticles(token.value);
+	// return (
+	// 	<main className="pb-12">
+	// 		<Header role={role} username={username}/>
+	// 		<div className="pt-30">
+	// 			<ArticleList articles={articles} />
+	// 		</div>
+	// 	</main>
+	// );
+
+    const res = await fetchArticles();
 	return (
 		<main className="pb-12">
-			<Header role={role} username={username}/>
+			<Header/>
 			<div className="pt-30">
-				<ArticleList articles={articles} />
+				<ArticleList articles={res.articles} />
 			</div>
 		</main>
 	);
