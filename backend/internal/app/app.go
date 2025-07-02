@@ -88,7 +88,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.logger.Info("Request", "method", r.Method, "path", r.URL.Path)
 
 	// CORS設定
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8081")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000, http://localhost:8081")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
