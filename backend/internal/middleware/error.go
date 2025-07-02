@@ -48,7 +48,7 @@ func handleError(w http.ResponseWriter, r *http.Request, err error) {
 	var appErr *apperrors.AppError
 
 	// AppErrorかどうかチェック
-	if errors.As(err, &appErr) && appErr != nil {
+	if errors.As(err, &appErr) {
 		writeErrorResponse(w, appErr)
 	} else {
 		// 予期しないエラーの場合
