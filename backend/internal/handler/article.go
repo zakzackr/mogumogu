@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -57,9 +58,10 @@ func (h *ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) erro
 	}
 
 	// 記事詳細取得サービス関数の呼び出し
-	article, err := h.articleService.GetArticleById(id)
-	if err != nil {
-		return err
+	article, appErr := h.articleService.GetArticleById(id)
+	if appErr != nil {
+		fmt.Println("errorあり")
+		return appErr
 	}
 
 	w.Header().Set("Content-Type", "application/json")

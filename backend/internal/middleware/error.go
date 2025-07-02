@@ -26,7 +26,7 @@ func (ah AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				"method", r.Method,
 				"path", r.URL.Path,
 			)
-			
+
 			internalErr := apperrors.NewAppError(
 				"INTERNAL_SERVER_ERROR",
 				"予期しないエラーが発生しました",
@@ -46,9 +46,9 @@ func (ah AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // handleError はエラーを適切なHTTPレスポンスに変換
 func handleError(w http.ResponseWriter, r *http.Request, err error) {
 	var appErr *apperrors.AppError
-	
+
 	// AppErrorかどうかチェック
-	if errors.As(err, &appErr) {
+	if errors.As(err, &appErr) && appErr != nil {
 		writeErrorResponse(w, appErr)
 	} else {
 		// 予期しないエラーの場合
@@ -57,11 +57,11 @@ func handleError(w http.ResponseWriter, r *http.Request, err error) {
 			"method", r.Method,
 			"path", r.URL.Path,
 		)
-		
+
 		// 予期しないエラーは全てInternal Server Errorで返す
 		internalErr := apperrors.NewAppError(
 			"INTERNAL_SERVER_ERROR",
-			"内部サーバーエラーが発生しました",
+			"予期しないエラーが発生しました",
 			http.StatusInternalServerError,
 			err,
 		)

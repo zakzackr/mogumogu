@@ -51,12 +51,14 @@ func New() *App {
 	// DB接続
 	db, err := sql.Open("postgres", config.databaseURL)
 	if err != nil {
-		logger.Fatal("Failed to connect to database:", err)
+		logger.Error("Failed to connect to database:", "error", err)
+		os.Exit(1) // 異常終了でプロセス終了
 	}
 
 	// DB接続の成功を確認
 	if err := db.Ping(); err != nil {
-		logger.Fatal("Failed to ping database:", err)
+		logger.Error("Failed to ping database:", "error", err)
+		os.Exit(1) // 異常終了でプロセス終了
 	}
 
 	app := &App{

@@ -23,14 +23,14 @@ func NewArticleRepository(db *sql.DB, logger *slog.Logger) *ArticleRepository {
 
 // 記事一覧の取得
 func (r *ArticleRepository) GetArticles() ([]*model.ArticleListItem, *apperrors.AppError) {
-	r.logger.Info("記事一覧取得開始")
+	r.logger.Info("記事一覧取得リポジトリ開始")
 
 	//ゼロ値で初期化
 	var articles []*model.ArticleListItem
 
 	// queryを作成
 	query := `
-		SELECT id, author_id, title, like_count, stock_count, image_urls, created_at, updated_at
+		SELECT id, author_id, title, like_count, stock_count, created_at, updated_at
 		From articles
 	`
 	rows, err := r.db.Query(query)
@@ -59,7 +59,7 @@ func (r *ArticleRepository) GetArticles() ([]*model.ArticleListItem, *apperrors.
 			&article.Title,
 			&article.LikeCount,
 			&article.StockCount,
-			&article.ImageUrls,
+			// &article.ImageUrls,
 			&article.CreatedAt,
 			&article.UpdatedAt,
 		)
@@ -92,18 +92,20 @@ func (r *ArticleRepository) GetArticles() ([]*model.ArticleListItem, *apperrors.
 	}
 
 	// 正常終了
-	r.logger.Info("記事一覧取得完了")
+	r.logger.Info("記事一覧取得リポジトリ完了", "count", len(articles))
 	return articles, nil
 }
 
 // 記事詳細の取得
 func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
+	r.logger.Info("記事詳細取得リポジトリ開始", "authorId", id)
+
 	//ゼロ値で初期化
 	article := &model.Article{}
 
 	// queryを作成
 	query := `
-		SELECT id, author_id, title, body, like_count, stock_count, image_urls, created_at, updated_at
+		SELECT id, author_id, title, body, like_count, stock_count, created_at, updated_at
 		FROM articles
 		WHERE id = $1
 	`
@@ -116,13 +118,14 @@ func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors
 		&article.Body,
 		&article.LikeCount,
 		&article.StockCount,
-		&article.ImageUrls,
+		// &article.ImageUrls,
 		&article.CreatedAt,
 		&article.UpdatedAt,
 	)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
+			r.logger.Error("sql.ErrNoRowsが発生", "error", err)
 			return nil, apperrors.NewAppError(
 				"ARTICLE_NOT_FOUND",
 				"記事が見つかりませんでした。",
@@ -138,12 +141,13 @@ func (r *ArticleRepository) GetArticleById(id int64) (*model.Article, *apperrors
 		)
 	}
 
+	r.logger.Info("記事詳細取得リポジトリ完了", "authorId", article.ID)
 	return article, nil
 }
 
 // 記事の作成
 func (r *ArticleRepository) CreateArticle(req *model.CreateArticleRequest, authorId int64) (*model.Article, *apperrors.AppError) {
-	r.logger.Info("記事作成開始", "title", req.Title, "authorId", authorId)
+	r.logger.Info("記事作成リポジトリ開始", "title", req.Title, "authorId", authorId)
 
 	//ゼロ値で初期化
 	article := &model.Article{}
@@ -151,8 +155,8 @@ func (r *ArticleRepository) CreateArticle(req *model.CreateArticleRequest, autho
 	// queryの作成
 	query := `
 		INSERT INTO articles(author_id, title, body)
-		VALUES ($1, $2, $3, $4)
-		RETURNING id, author_id, title, body, like_count, stock_count, image_urls, created_at, updated_at
+		VALUES ($1, $2, $3)
+		RETURNING id, author_id, title, body, like_count, stock_count, created_at, updated_at
 	`
 
 	row := r.db.QueryRow(query, authorId, req.Title, req.Body)
@@ -163,7 +167,7 @@ func (r *ArticleRepository) CreateArticle(req *model.CreateArticleRequest, autho
 		&article.Body,
 		&article.LikeCount,
 		&article.StockCount,
-		&article.ImageUrls,
+		// &article.ImageUrls,
 		&article.CreatedAt,
 		&article.UpdatedAt,
 	)
@@ -180,6 +184,6 @@ func (r *ArticleRepository) CreateArticle(req *model.CreateArticleRequest, autho
 		}
 	}
 
-	r.logger.Info("記事作成完了", "articleId", article.ID)
+	r.logger.Info("記事作成リポジトリ完了", "articleId", article.ID)
 	return article, nil
 }
