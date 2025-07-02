@@ -10,12 +10,22 @@ const baseUrl = isServer
  * @returns 記事一覧の配列
  * @throws API通信エラー時に例外を投げる
  */
-export async function fetchArticles(token: string) {
-    const res = await fetch(`${baseUrl}/articles`, {
-        headers: {
-            'Cookie': `accessToken=${token}`
-        }
-    });
+// export async function fetchArticles(token: string) {
+//     const res = await fetch(`${baseUrl}/articles`, {
+//         headers: {
+//             'Cookie': `accessToken=${token}`
+//         }
+//     });
+
+//     if (!res.ok) {
+//         const errorJson = await res.json();
+//         throw new Error(errorJson.message || '記事一覧の取得に失敗しました。');
+//     }
+//     return res.json();
+// }
+
+export async function fetchArticles() {
+    const res = await fetch(`${baseUrl}/articles`);
 
     if (!res.ok) {
         const errorJson = await res.json();
@@ -31,12 +41,21 @@ export async function fetchArticles(token: string) {
  * @returns 記事データ
  * @throws API通信エラー時に例外を投げる
  */
-export async function fetchArticleById(articleId: string | number, token: string | undefined) {
-    const res = await fetch(`${baseUrl}/articles/${articleId}`, {
-        headers: {
-            'Cookie': `accessToken=${token}`
-        }
-    });
+// export async function fetchArticleById(articleId: string | number, token: string | undefined) {
+//     const res = await fetch(`${baseUrl}/articles/${articleId}`, {
+//         headers: {
+//             'Cookie': `accessToken=${token}`
+//         }
+//     });
+//     if (!res.ok) {
+//         const errorJson = await res.json();
+//         throw new Error(errorJson.message || '記事の取得に失敗しました。');
+//     }
+//     return res.json();
+// }
+
+export async function fetchArticleById(articleId: string | number) {
+    const res = await fetch(`${baseUrl}/articles/${articleId}`);
     if (!res.ok) {
         const errorJson = await res.json();
         throw new Error(errorJson.message || '記事の取得に失敗しました。');
@@ -61,10 +80,24 @@ type ArticlePostInput = {
  * @throws API通信エラー時に例外を投げる
  * @note Cookieをクロスオリジンに送信するため、credentials: 'include' を指定
  */
+// export async function postArticle({ title, body }: ArticlePostInput) {
+//     const res = await fetch(`${baseUrl}/articles`, {
+//         method: "POST",
+//         credentials: 'include',
+//         body: JSON.stringify({ title, body }),
+//         headers: { 'Content-Type': 'application/json' }
+//     });
+    
+//     if (!res.ok) {
+//         const errorJson = await res.json();
+//         throw new Error(errorJson.message || '記事の投稿に失敗しました。');
+//     }
+//     return res.json();
+// }
+
 export async function postArticle({ title, body }: ArticlePostInput) {
     const res = await fetch(`${baseUrl}/articles`, {
         method: "POST",
-        credentials: 'include',
         body: JSON.stringify({ title, body }),
         headers: { 'Content-Type': 'application/json' }
     });
