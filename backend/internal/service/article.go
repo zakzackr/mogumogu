@@ -37,6 +37,8 @@ func (s *ArticleService) GetArticles() ([]*model.ArticleListItem, *apperrors.App
 
 // 記事詳細の取得
 func (s *ArticleService) GetArticleById(id int64) (*model.Article, *apperrors.AppError) {
+	s.logger.Info("記事詳細取得サービス開始")
+
 	// idのvalidation
 	if id <= 0 {
 		return nil, apperrors.NewAppError(
@@ -52,6 +54,7 @@ func (s *ArticleService) GetArticleById(id int64) (*model.Article, *apperrors.Ap
 		return nil, err
 	}
 
+	s.logger.Info("記事詳細取得サービス完了", "articleID", article.ID)
 	return article, nil
 }
 
@@ -65,6 +68,6 @@ func (s *ArticleService) CreateArticle(req *model.CreateArticleRequest, authorId
 		return nil, err
 	}
 
-	s.logger.Info("記事作成取得サービス開始", "articleID", article.ID)
+	s.logger.Info("記事作成取得サービス終了", "articleID", article.ID)
 	return article, nil
 }
