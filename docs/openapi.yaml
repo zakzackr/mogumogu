@@ -627,7 +627,15 @@ components:
           example: 京都ラーメンのおすすめ
         body:
           type: string
-          example: 今日は京都のラーメンを5件紹介します！
+          example: |
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "こんにちは、Tiptapの世界！"
+                }
+              ]
+            }
         imageUrls:
           type: array
           items:
