@@ -18,6 +18,7 @@ type ArticleHandler struct {
 	logger         *slog.Logger
 }
 
+// ArticleHandlerを作成
 func NewArticleHandler(articleService *service.ArticleService, logger *slog.Logger) *ArticleHandler {
 	return &ArticleHandler{
 		articleService: articleService,
