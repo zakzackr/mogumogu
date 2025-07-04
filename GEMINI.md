@@ -44,17 +44,17 @@ ramen-blog/
 │   ├── cmd/server/main.go    # Application entry point
 │   ├── internal/
 │   │   ├── app/             # App構造体とアプリケーション設定
-│   │   ├── handler/         # HTTP handlers by domain
+│   │   ├── handler/         # HTTP handlers（ドメインごと）
 │   │   │   ├── ramen.go     # ラーメン店・レビュー関連
 │   │   │   ├── auth.go      # 認証関連
 │   │   │   ├── user.go      # ユーザー管理
 │   │   │   └── search.go    # 検索機能
-│   │   ├── service/         # Business logic layer
-│   │   ├── repository/      # Data access layer
-│   │   ├── middleware/      # HTTP middleware
-│   │   ├── model/          # Domain models
+│   │   ├── service/         # ビジネスロジック層
+│   │   ├── repository/      # データアクセス層
+│   │   ├── middleware/      # ミドルウェア
+│   │   ├── model/          # ドメインモデル
 │   │   └── config/         # Configuration management
-│   ├── migrations/         # Database schema migrations
+│   ├── migrations/         # データベースマイグレーション
 │   ├── go.mod
 │   └── go.sum
 ├── docker-compose.yml
