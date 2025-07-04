@@ -50,6 +50,7 @@ func New() *App {
 
 	// DB接続
 	db, err := sql.Open("postgres", config.databaseURL)
+	// TODO: DB接続失敗時のリトライ処理
 	if err != nil {
 		logger.Error("Failed to connect to database:", "error", err)
 		os.Exit(1) // 異常終了でプロセス終了
