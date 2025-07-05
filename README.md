@@ -41,7 +41,7 @@
 ├── docker-compose.yml   # docker composeファイル
 ├── CLAUDE.md            # Claude-Code設定ファイル
 ├── GEMINI.md            # Gemini CLI設定ファイル
-├── README.md            # このファイル
+├── README.md            # README
 
 ```
 
