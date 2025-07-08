@@ -46,7 +46,14 @@
 ```
 
 ## 技術スタック           
-作成中...
+| カテゴリ    | 技術                                                     |
+|---------|--------------------------------------------------------|
+| フロントエンド | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui |
+| バックエンド  | Go |
+| データベース  | PostgreSQL|
+| 認証・認可   | Supabase|
+| インフラ    | Docker |
+| 開発ツール   | Git, Claude Code, GEMINI CLI etc... |
 
 ## 開発環境構築手順
 作成中...
