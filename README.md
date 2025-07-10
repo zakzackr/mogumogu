@@ -53,7 +53,7 @@
 | データベース  | PostgreSQL|
 | 認証・認可   | Supabase|
 | インフラ    | Docker |
-| ツール   | Git, Claude Code, GEMINI CLI etc... |
+| ツール   | Git, Claude Code, Gemini CLI etc... |
 
 ## 開発環境構築手順
 作成中...
