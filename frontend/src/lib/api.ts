@@ -4,6 +4,8 @@ const baseUrl = isServer
   ? process.env.API_BASE_URL // SSR：Dockerサービス名
   : process.env.NEXT_PUBLIC_API_BASE_URL; // CSR：ホストポート
 
+// TODO: export const createClient = () => {}で統一
+
 /**
  * 記事一覧を取得
  * @param token 認証用トークン（SSRで利用）
