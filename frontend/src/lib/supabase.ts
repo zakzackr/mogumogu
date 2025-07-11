@@ -15,7 +15,7 @@ export const createClient = () => {
 }
 
 // Server ComponentからSupabase APIにアクセスするための設定
-export const createServerComponentClient = async () => {
+export const createServerSideClient = async () => {
     const cookieStore = await cookies()
     
     // SCでSupabaseクライアントを生成
