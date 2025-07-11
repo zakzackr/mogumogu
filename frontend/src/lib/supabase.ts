@@ -14,11 +14,11 @@ export const createClient = () => {
     )
 }
 
-// Server ComponentからSupabase APIにアクセスするための設定
+// ServerSideからSupabase APIにアクセスするための設定
 export const createServerSideClient = async () => {
     const cookieStore = await cookies()
     
-    // SCでSupabaseクライアントを生成
+    // ServerSideでSupabaseクライアントを生成
     return createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
