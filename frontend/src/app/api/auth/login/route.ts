@@ -31,6 +31,7 @@ export async function POST(request: Request){
         })
 
         if (error) {
+            console.error('Supabase login error:', error)
             return createErrorResponse(
                 ERROR_CODES.AUTHENTICATION_ERROR,
                 "ログインに失敗しました",
@@ -38,9 +39,25 @@ export async function POST(request: Request){
             )
         }
 
+        // ユーザー情報のvalidation
+        if (!data.user) {
+            return createErrorResponse(
+                ERROR_CODES.INTERNAL_SERVER_ERROR,
+                "ユーザー情報の取得に失敗しました",
+                StatusCodes.INTERNAL_SERVER_ERROR
+            )
+        }
+
         // TODO: username, avatar_urlなどの返却を検討
         return NextResponse.json(
-            { message: "ログインに成功しました"},
+            { 
+                message: "ログインに成功しました",
+                user: {
+                    username: data.user.user_metadata?.username,
+                    avatar_url: data.user.user_metadata?.avatar_url,
+                    role: data.user.user_metadata?.role || 'user',
+                }
+            },
             { status: StatusCodes.OK }
         )
     } catch (error) {
@@ -50,13 +67,4 @@ export async function POST(request: Request){
             StatusCodes.INTERNAL_SERVER_ERROR
         )
     }
-    // SupabaseのServerSideクライアントを作成？
-
-    request.
-    
-    // CookieからJWTを取得
-
-    // JWTをAuthorizationヘッダにセット
-
-    // Go APIを叩く
 }
