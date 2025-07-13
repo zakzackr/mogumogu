@@ -18,15 +18,14 @@ export async function POST() {
         const { error } = await supabase.auth.signOut();
 
         if (error) {
-            // サーバーサイドでのログアウトに失敗した場合でも、
-            // クライアントをログアウトさせるために処理を続行します。
-            // エラーはログに記録しておきます。
             console.error("Supabase logout error:", error);
         }
 
         // ログアウト成功時のレスポンス
         // signOut()が成功しても失敗しても、このレスポンスが返され、
         // SupabaseのミドルウェアがCookieをクリアするヘッダーを添付します。
+
+        // TODO: signOut成功時も失敗時も、supabase middlewareがmax-age:0をセットにより、Cookieが自動クリアされるか確認
         return NextResponse.json(
             {
                 message: "ログアウトに成功しました",
