@@ -1,7 +1,7 @@
 import { createErrorResponse, ERROR_CODES } from "@/lib/apiResponse";
 import { createServerSideClient } from "@/lib/supabase";
 import { StatusCodes } from "http-status-codes";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 /**
  * ログアウト用のRoute Handler
@@ -26,12 +26,23 @@ export async function POST() {
         // SupabaseのミドルウェアがCookieをクリアするヘッダーを添付します。
 
         // TODO: signOut成功時も失敗時も、supabase middlewareがmax-age:0をセットにより、Cookieが自動クリアされるか確認
-        return NextResponse.json(
+        const response = NextResponse.json(
             {
                 message: "ログアウトに成功しました",
             },
             { status: StatusCodes.OK }
         );
+
+        // ログアウト失敗時用に、手動でCookieを削除
+        response.cookies.set("sb-access-token", "", {
+            path: "/",
+            maxAge: 0,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // 本番環境では、true
+            sameSite: "strict",
+        });
+
+        return response;
     } catch (error) {
         console.error("Logout API error:", error);
         return createErrorResponse(
