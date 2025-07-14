@@ -1,5 +1,5 @@
 import { createErrorResponse, ERROR_CODES } from "@/lib/apiResponse";
-import { createServerSideClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import { StatusCodes } from "http-status-codes";
 import { NextResponse } from "next/server";
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         }
 
         // supabaseクライアントを作成
-        const supabase = await createServerSideClient();
+        const supabase = await createClient();
 
         // ログイン
         const { data, error } = await supabase.auth.signInWithPassword({
