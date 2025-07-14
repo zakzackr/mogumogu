@@ -34,9 +34,16 @@ export async function POST(request: Request) {
         // supabaseクライアントを作成
         const supabase = await createServerSideClient();
 
+        // username, email, passwordで新規登録
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
+            options: {
+                data: {
+                    username,
+                    role: "user", // TODO: role名、adminの設定方法など確認
+                },
+            },
         });
 
         if (error) {

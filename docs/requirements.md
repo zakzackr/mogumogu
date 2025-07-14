@@ -57,40 +57,78 @@
 ./openapi.yaml参照
 
 ## 認証設計
-### JWT認証
-- **HttpOnly Cookieに保管** すること。
-    - JWTをLocalStorageに保管する場合、クライアントコンポーネントからはJWTにアクセスできるが、サーバーコンポーネントからはJWTにアクセスできない。
-    - CookieにJWTを保管することで、サーバーコンポーネントからも、クライアントコンポーネントからもアクセス可能になる。
 
-#### Cookieの設定
+### アーキテクチャ
+- **BFF（Backend for Frontend）** + **Supabase認証**を採用
+- Next.js Route Handler（BFF層）でSupabase認証を処理
+- JWT認証をHttpOnly Cookieで管理（Supabase SSR）
+
+### 認証フロー
+1. **クライアント**: フロントエンドから`/api/auth/*`（Route Handler）を呼び出し
+2. **BFF層**: Route HandlerでSupabase認証API（`signInWithPassword`, `signUp`, `signOut`）を実行
+3. **セッション管理**: SupabaseがHttpOnly CookieにJWT（access-token, refresh-token）を自動保存
+4. **認証状態**: Client Components・Server Components両方でセッション情報にアクセス可能
+
+### JWT管理
+- **保存場所**: HttpOnly Cookie（Supabaseが自動管理）
+- **アクセス方法**:
+  - Client Components: ブラウザが自動でCookieを送信（`credentials: 'include'`）
+  - Server Components: `createServerSideClient()`でCookieから取得
+- **Go API連携**: Server ComponentからJWTを取得し、`Authorization: Bearer <token>`ヘッダーで送信
+
+#### Cookieの設定（Supabaseが自動設定）
 - HttpOnly属性: true
 - Secure属性: false（開発時）、true（本番環境）
-- SameSite属性: none
-- Max-Age属性: 2時間（JWTの有効期限と同じにする）
+- SameSite属性: Supabaseの設定に従う
+- 有効期限: Supabaseのトークン有効期限に従う
 
-#### JWTの設定
-- subクレーム: username
-- expクレーム: 2時間（有効期限）
-- roleクレーム: 権限（例: ROLE_ADMIN, ROLE_USER）
+#### JWTの設定（Supabaseが生成）
+- subクレーム: ユーザーID（Supabase UUID）
+- emailクレーム: ユーザーメールアドレス
+- user_metadataクレーム: username, role等のカスタム情報
+- roleクレーム: authenticated/anon（Supabaseの内部ロール）
+
+### Go API連携
+- **JWT検証**: SupabaseのJWT SecretをGo側でも設定し、同じキーで検証
+- **認証方式**: `Authorization: Bearer <token>`ヘッダー
+- **ユーザー情報**: JWTのクレームからユーザーID・メタデータを取得
 
 
 ## 認可設計
 
-以下の2つの権限を作成する。
+### ロール管理
+ユーザーのロール情報は`user_metadata.role`に保存し、以下の権限体系を採用：
 
-### ROLE_ADMIN
+#### user（一般ユーザー）
+- 記事の一覧表示、詳細表示
+- 自身の記事の投稿、編集、削除
+- いいね、保存機能
+- プロフィール表示・編集
+- コメント投稿・編集・削除（自身のコメントのみ）
 
-- ROLE_USERが実行可能な全ての操作
+#### admin（管理者）
+- user権限の全て
+- 全ユーザーの記事・コメントの管理（編集・削除）
+- ユーザー管理
+- システム設定
 
-### ROLE_USER
+### アクセス制御
+#### フロントエンド（middleware.ts）
+- **保護されたページ**: `/dashboard`, `/profile`, `/articles/new`, `/articles/edit`
+- **認証ページ**: `/login`, `/signup`（認証済みユーザーは`/dashboard`にリダイレクト）
+- **未認証時**: 保護されたページへのアクセスは`/login`にリダイレクト
 
-- 記事の一覧表示、詳細表示、投稿、編集、削除
-- トークテーマの表示
-- いいね、MVP機能
-- プロフィール機能、コメント機能
-- などトークテーマ作成以外の全ての操作
-  
-ログイン済みのユーザーとログイン済みでないユーザーで動作を分ける。（例：ログインユーザーのみ投稿可能。いいね、保存可能など）そのための権限を考えること。
+#### バックエンド（Go API）
+- JWT検証ミドルウェアで全API保護
+- ロールベースの認可制御
+- リソース所有者チェック（記事・コメントの編集・削除）
+
+### 実装状況
+- ✅ Route Handler（login, signup, logout）
+- ✅ username・roleのuser_metadata保存
+- 🚧 middleware.ts（認証チェック・リダイレクト）
+- ⏳ api.ts修正（Route Handler呼び出し）
+- ⏳ 認証状態管理（React Context）
 
 
 
