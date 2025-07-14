@@ -1,13 +1,18 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { register } from "@/lib/api";
+import { signup } from "@/lib/api";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 
 /**
  * ユーザー新規登録画面
@@ -30,11 +35,11 @@ export default function RegisterPage() {
 
         try {
             // 新規登録APIの呼び出し
-            await register(email, password, lastName, firstName, username);
+            await signup(email, password, lastName, firstName, username);
             // 新規登録完了後、記事一覧表示画面に遷移
             router.push("/");
-        } catch(error: unknown){
-            if (error instanceof Error){
+        } catch (error: unknown) {
+            if (error instanceof Error) {
                 setError(error.message);
             } else {
                 setError("新規登録に失敗しました。");
@@ -50,10 +55,16 @@ export default function RegisterPage() {
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
                     <CardContent className="mb-6">
-                        {error && <div className="text-red-500 text-center text-sm mb-2">{error}</div>}
+                        {error && (
+                            <div className="text-red-500 text-center text-sm mb-2">
+                                {error}
+                            </div>
+                        )}
                         <div className="flex flex-col gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="email" className="text-sm">Email</Label>
+                                <Label htmlFor="email" className="text-sm">
+                                    Email
+                                </Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -63,40 +74,60 @@ export default function RegisterPage() {
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="password" className="text-sm">Password</Label>
-                                <Input 
-                                    id="password" 
+                                <Label htmlFor="password" className="text-sm">
+                                    Password
+                                </Label>
+                                <Input
+                                    id="password"
                                     type="password"
                                     placeholder="パスワード"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required />
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
+                                    required
+                                />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="lastName" className="text-sm">名字</Label>
-                                <Input 
-                                    id="lastName" 
+                                <Label htmlFor="lastName" className="text-sm">
+                                    名字
+                                </Label>
+                                <Input
+                                    id="lastName"
                                     type="text"
                                     placeholder="名字"
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    required />
+                                    onChange={(e) =>
+                                        setLastName(e.target.value)
+                                    }
+                                    required
+                                />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="firstName" className="text-sm">名前</Label>
-                                <Input 
-                                    id="firstName" 
+                                <Label htmlFor="firstName" className="text-sm">
+                                    名前
+                                </Label>
+                                <Input
+                                    id="firstName"
                                     type="text"
                                     placeholder="名前"
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    required />
+                                    onChange={(e) =>
+                                        setFirstName(e.target.value)
+                                    }
+                                    required
+                                />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="username" className="text-sm">Username</Label>
-                                <Input 
-                                    id="username" 
+                                <Label htmlFor="username" className="text-sm">
+                                    Username
+                                </Label>
+                                <Input
+                                    id="username"
                                     type="text"
                                     placeholder="ユーザーネーム"
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    required />
+                                    onChange={(e) =>
+                                        setUsername(e.target.value)
+                                    }
+                                    required
+                                />
                             </div>
                         </div>
                     </CardContent>
@@ -104,12 +135,16 @@ export default function RegisterPage() {
                         <Button type="submit" className="w-full">
                             新規登録
                         </Button>
-                        <Button variant="outline" className="w-full text-gray-950" onClick={() => router.push("/login")}>
+                        <Button
+                            variant="outline"
+                            className="w-full text-gray-950"
+                            onClick={() => router.push("/login")}
+                        >
                             ログイン
                         </Button>
                     </CardFooter>
                 </form>
             </Card>
         </div>
-    )
+    );
 }

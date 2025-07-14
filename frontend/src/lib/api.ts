@@ -1,8 +1,5 @@
-// 実行環境を判定して、BASE_URL を分ける
-const isServer = typeof window === "undefined";
-const baseUrl = isServer
-  ? process.env.API_BASE_URL // SSR：Dockerサービス名
-  : process.env.NEXT_PUBLIC_API_BASE_URL; // CSR：ホストポート
+const goApiBaseUrl =
+    process.env.GO_API_BASE_URL || "http://localhost:8080/api/v1";
 
 // TODO: export const createClient = () => {}で統一
 
@@ -27,11 +24,11 @@ const baseUrl = isServer
 // }
 
 export async function fetchArticles() {
-    const res = await fetch(`${baseUrl}/articles`);
+    const res = await fetch(`${goApiBaseUrl}/articles`);
 
     if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || '記事一覧の取得に失敗しました。');
+        throw new Error(errorJson.message || "記事一覧の取得に失敗しました。");
     }
     return res.json();
 }
@@ -57,10 +54,10 @@ export async function fetchArticles() {
 // }
 
 export async function fetchArticleById(articleId: string | number) {
-    const res = await fetch(`${baseUrl}/articles/${articleId}`);
+    const res = await fetch(`${goApiBaseUrl}/articles/${articleId}`);
     if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || '記事の取得に失敗しました。');
+        throw new Error(errorJson.message || "記事の取得に失敗しました。");
     }
     return res.json();
 }
@@ -82,74 +79,60 @@ type ArticlePostInput = {
  * @throws API通信エラー時に例外を投げる
  * @note Cookieをクロスオリジンに送信するため、credentials: 'include' を指定
  */
-// export async function postArticle({ title, body }: ArticlePostInput) {
-//     const res = await fetch(`${baseUrl}/articles`, {
-//         method: "POST",
-//         credentials: 'include',
-//         body: JSON.stringify({ title, body }),
-//         headers: { 'Content-Type': 'application/json' }
-//     });
-    
-//     if (!res.ok) {
-//         const errorJson = await res.json();
-//         throw new Error(errorJson.message || '記事の投稿に失敗しました。');
-//     }
-//     return res.json();
-// }
 
 export async function postArticle({ title, body }: ArticlePostInput) {
-    const res = await fetch(`${baseUrl}/articles`, {
+    const res = await fetch(`/api/articles`, {
         method: "POST",
         body: JSON.stringify({ title, body }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
     });
-    
+
     if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || '記事の投稿に失敗しました。');
+        throw new Error(errorJson.message || "記事の投稿に失敗しました。");
     }
     return res.json();
 }
 
 /**
  * 記事にいいねを追加する
- * @param articleId - 記事のID 
+ * @param articleId - 記事のID
  * @returns 更新後の記事データ
  * @throws API通信エラー時に例外を投げる
  * @note Cookieをクロスオリジンに送信するため、credentials: 'include' を指定
  */
-export async function addLike(articleId: string | number){
-    const res = await fetch(`${baseUrl}/articles/${articleId}/likes`, {
+export async function addLike(articleId: string | number) {
+    const res = await fetch(`/api/articles/${articleId}/likes`, {
         method: "POST",
-        credentials: 'include'
+        credentials: "include",
     });
 
     if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || 'いいねに失敗しました。');
+        throw new Error(errorJson.message || "いいねに失敗しました。");
     }
     return res.json();
 }
 
 /**
  * 記事にMVPを追加する
- * @param articleId - 記事のID 
+ * @param articleId - 記事のID
  * @returns 更新後の記事データ
  * @throws API通信エラー時に例外を投げる
  * @note Cookieをクロスオリジンに送信するため、credentials: 'include' を指定
  */
-export async function addMvp(articleId: string | number){
-    const res = await fetch(`${baseUrl}/articles/${articleId}/mvps`, {
+export async function addStock(articleId: string | number) {
+    const res = await fetch(`/api/articles/${articleId}/stock`, {
         method: "POST",
-        credentials: 'include'
+        credentials: "include",
     });
 
     if (!res.ok) {
         const errorJson = await res.json();
-        if (errorJson.code === "MAX_MVP_LIMIT_EXCEEDED"){
+        if (errorJson.code === "MAX_MVP_LIMIT_EXCEEDED") {
             throw new Error(errorJson.message);
         } else {
-            throw new Error(errorJson.message || 'MVPに失敗しました。');
+            throw new Error(errorJson.message || "MVPに失敗しました。");
         }
     }
     return res.json();
@@ -157,7 +140,7 @@ export async function addMvp(articleId: string | number){
 
 /**
  * ユーザーの新規登録を行う
- * @param email - メールアドレス 
+ * @param email - メールアドレス
  * @param password - パスワード
  * @param lastName - 名字
  * @param firstName - 名前
@@ -166,31 +149,45 @@ export async function addMvp(articleId: string | number){
  * @throws API通信エラー時に例外を投げる
  * @note 新規登録後にCookieを受け取るために、credentials: 'include' を指定
  */
-export async function register(email: string, password: string, lastName: string, firstName: string, username: string){
-    const res = await fetch(`${baseUrl}/auth/register`, {
+export async function signup(
+    email: string,
+    password: string,
+    lastName: string,
+    firstName: string,
+    username: string
+) {
+    const res = await fetch(`/api/auth/signup`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, lastName, firstName, username }),
+        body: JSON.stringify({
+            email,
+            password,
+            lastName,
+            firstName,
+            username,
+        }),
     });
 
-    if (!res.ok){
+    if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || '新規ユーザー登録に失敗しました。');
+        throw new Error(
+            errorJson.message || "新規ユーザー登録に失敗しました。"
+        );
     }
     return res.json();
 }
 
 /**
  * ユーザーのログインを行う
- * @param usernameOrEmail - ユーザーネームorメールアドレス 
+ * @param email - メールアドレス
  * @param password - パスワード
  * @returns ログインしたユーザーのデータ
  * @throws API通信エラー時に例外を投げる
  * @note ログイン後にCookieを受け取るために、credentials: 'include' を指定
  */
-export async function login(usernameOrEmail: string, password: string){
-    const res = await fetch(`${baseUrl}/auth/login`, {
+export async function login(usernameOrEmail: string, password: string) {
+    const res = await fetch(`/api/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -199,7 +196,7 @@ export async function login(usernameOrEmail: string, password: string){
 
     if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || 'ログインに失敗しました。');
+        throw new Error(errorJson.message || "ログインに失敗しました。");
     }
     return res.json();
 }
@@ -210,68 +207,15 @@ export async function login(usernameOrEmail: string, password: string){
  * @throws API通信エラー時に例外を投げる
  * @note 有効期限切れのCookieを受け取るために、credentials: 'include' を指定
  */
-export async function logout(){
-    const res = await fetch(`${baseUrl}/auth/logout`, {
+export async function logout() {
+    const res = await fetch(`/api/auth/logout`, {
         method: "POST",
         credentials: "include",
     });
 
     if (!res.ok) {
         const errorJson = await res.json();
-        throw new Error(errorJson.message || 'ログアウトに失敗しました。');
+        throw new Error(errorJson.message || "ログアウトに失敗しました。");
     }
     return res.text();
 }
-
-/**
- * トークテーマの作成で使用する入力データ型
- * @property title - トークテーマのタイトル
- * @property description - トークテーマの詳細説明
- */
-type TopicInput = {
-    title: string;
-    description: string;
-};
-
-
-/**
- * トークテーマの作成を行う
- * @param topicInput - 作成されたトークテーマデータ（タイトルと説明）
- * @returns 作成されたトークテーマ
- * @throws API通信エラー時に例外を投げる
- * @note Cookieをクロスオリジンに送信するため、credentials: 'include' を指定
- */
-export async function createTopic({ title, description }: TopicInput){
-    const res = await fetch(`${baseUrl}/topics`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ title, description }),
-        headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (!res.ok) {
-        const errorJson = await res.json();
-        throw new Error(errorJson.message || 'トークテーマの作成に失敗しました。');
-    }
-    return res.json();
-}
-
-/**
- * トークテーマの取得を行う
- * @returns 取得したトークテーマ
- * @throws API通信エラー時に例外を投げる
- * @note Cookieをクロスオリジンに送信するため、credentials: 'include' を指定
- */
-export async function fetchTopic(){
-    const res = await fetch(`${baseUrl}/topics`, {
-        credentials: "include",
-    });
-
-    if (!res.ok) {
-        const errorJson = await res.json();
-        throw new Error(errorJson.message || 'トークテーマの取得に失敗しました。');
-    }
-    return res.json();
-}
-
-

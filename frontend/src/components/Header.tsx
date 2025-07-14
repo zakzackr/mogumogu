@@ -1,17 +1,23 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { useRouter } from 'next/navigation';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { RiLogoutBoxRLine } from "react-icons/ri";
-import { fetchTopic, logout } from "@/lib/api";
+import { logout } from "@/lib/api";
 
-import { RiChatSettingsLine, RiDiscussLine  } from "react-icons/ri";
+import { RiChatSettingsLine, RiDiscussLine } from "react-icons/ri";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useState } from "react";
 import { Separator } from "./ui/separator";
-
 
 /**
  * Headerコンポーネントのプロパティ型
@@ -21,8 +27,7 @@ import { Separator } from "./ui/separator";
 type HeaderProps = {
     role: string | undefined;
     username: string | undefined;
-}
-
+};
 
 /**
  * Headerコンポーネント
@@ -56,7 +61,7 @@ type HeaderProps = {
 //             } else {
 //                 setTopicError("トークテーマの取得に失敗しました。");
 //             }
-//         } 
+//         }
 //     };
 
 //     // ログアウトを行う
@@ -78,7 +83,7 @@ type HeaderProps = {
 //                 <h1 className="text-2xl font-bold cursor-pointer">knowme</h1>
 //             </Link>
 //             <div className="flex items-center">
-//                 {role === "ROLE_ADMIN" && 
+//                 {role === "ROLE_ADMIN" &&
 //                     <Button variant="secondary" size="icon" className="mr-3" onClick={() => router.push("/topics")}><RiChatSettingsLine /></Button>
 //                 }
 //                 <Popover>
@@ -125,7 +130,6 @@ type HeaderProps = {
 // }
 
 export default function Header() {
-
     const router = useRouter();
     const [topicTitle, setTopicTitle] = useState("");
     const [topicDescription, setTopicDescription] = useState("");
@@ -133,24 +137,7 @@ export default function Header() {
 
     // click時に投稿ページに遷移
     const handleNewArticle = () => {
-        router.push('/articles/new');
-    };
-
-    // トークテーマの取得
-    const handleFetchTopic = async () => {
-        setTopicError("");
-        try {
-            // トークテーマ取得API呼び出し
-            const res = await fetchTopic();
-            setTopicTitle(res.title);
-            setTopicDescription(res.description);
-        } catch(error: unknown){
-            if (error instanceof Error){
-                setTopicError(error.message)
-            } else {
-                setTopicError("トークテーマの取得に失敗しました。");
-            }
-        } 
+        router.push("/articles/new");
     };
 
     // ログアウトを行う
@@ -158,9 +145,9 @@ export default function Header() {
         try {
             // ログアウトAPI呼び出し
             await logout();
-        } catch(error: unknown){
+        } catch (error: unknown) {
             console.log("logoutに失敗しました。", error);
-        } finally{
+        } finally {
             // ログイン画面に遷移
             router.push("/login");
         }
@@ -185,10 +172,13 @@ export default function Header() {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <Button className="cursor-pointer ml-3" onClick={handleNewArticle}>
+                <Button
+                    className="cursor-pointer ml-3"
+                    onClick={handleNewArticle}
+                >
                     <span className="font-bold"> 投稿する</span>
                 </Button>
             </div>
         </header>
-    )
+    );
 }
