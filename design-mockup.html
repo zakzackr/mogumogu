@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラーメンブログ - デザインモックアップ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #fff7ed;
+            color: #1c2917;
+        }
+        
+        /* ヘッダー */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ea580c;
+        }
+        
+        .nav-toggle {
+            display: flex;
+            background: #fff7ed;
+            border-radius: 8px;
+            padding: 4px;
+        }
+        
+        .nav-button {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .nav-button.active {
+            background: #ea580c;
+            color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-section {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #ea580c;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c2410c;
+        }
+        
+        .btn-secondary {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+        }
+        
+        .btn-secondary:hover {
+            background: #ffedd5;
+        }
+        
+        /* メインコンテンツ */
+        .main-container {
+            margin-top: 64px;
+            height: calc(100vh - 64px);
+            display: flex;
+        }
+        
+        /* ブログビュー */
+        .content-view {
+            width: 100%;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+        
+        .search-section {
+            margin-bottom: 32px;
+        }
+        
+        .filter-section {
+            margin-bottom: 24px;
+        }
+        
+        .filter-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        
+        .sort-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .results-header {
+            margin-bottom: 20px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .results-count {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .search-results {
+            margin-top: 32px;
+        }
+        
+        .article-tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #9ca3af;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* トレンド関連のスタイル */
+        .trend-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .trend-category {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .trend-category h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ea580c;
+        }
+        
+        .trend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .trend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fff7ed;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .trend-item:hover {
+            background: #ffedd5;
+            transform: translateY(-1px);
+        }
+        
+        .trend-rank {
+            background: #ea580c;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .trend-name {
+            font-weight: 600;
+            flex: 1;
+            color: #1f2937;
+        }
+        
+        .trend-count {
+            font-size: 12px;
+            color: #6b7280;
+            background: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        /* 人気記事関連のスタイル */
+        .popular-articles-section {
+            margin-bottom: 48px;
+        }
+        
+        .latest-articles-section {
+            border-top: 2px solid #f3f4f6;
+            padding-top: 24px;
+        }
+        
+        .article-card.popular {
+            position: relative;
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .article-card.popular .article-actions .action-btn {
+            background: #fff7ed;
+            border-color: #ea580c;
+            font-weight: 600;
+        }
+        
+        .article-card.popular .article-actions .action-btn:hover {
+            background: #ea580c;
+            color: white;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+        
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .article-image {
+            height: 160px;
+            background: linear-gradient(135deg, #fed7aa, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff7ed;
+            font-size: 48px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .article-image .fallback-icon {
+            z-index: 1;
+        }
+        
+        .article-content {
+            padding: 16px;
+        }
+        
+        .article-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        
+        .article-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #ffedd5;
+            border-color: #ea580c;
+        }
+        
+        /* マップビュー */
+        .map-view {
+            width: 100%;
+            position: relative;
+            background: #e5e7eb;
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fed7aa, #f97316);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9a3412;
+            font-size: 24px;
+            position: relative;
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .map-search {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-chip {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-chip.active {
+            background: #ea580c;
+            color: white;
+            border-color: #ea580c;
+        }
+        
+        /* 店舗マーカー */
+        .shop-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ea580c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+        
+        .shop-marker:hover {
+            transform: scale(1.1);
+        }
+        
+        .shop-marker.marker-1 { top: 30%; left: 25%; }
+        .shop-marker.marker-2 { top: 50%; left: 60%; }
+        .shop-marker.marker-3 { top: 70%; left: 35%; }
+        
+        /* 店舗詳細ポップアップ */
+        .shop-popup {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .shop-popup.visible {
+            transform: translateY(0);
+        }
+        
+        .shop-info {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .shop-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fed7aa, #ea580c);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff7ed;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .shop-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .shop-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .shop-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .stars {
+            color: #f59e0b;
+        }
+        
+        .shop-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+        }
+        
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            border-bottom-color: #ea580c;
+            color: #ea580c;
+        }
+        
+        .tab-content {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .review-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .review-author {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .review-date {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .review-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 16px;
+            }
+            
+            .nav-toggle {
+                order: -1;
+            }
+            
+            .auth-section {
+                gap: 8px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .content-view {
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
+            }
+            
+            .map-view {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .article-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .map-controls {
+                position: static;
+                background: white;
+                margin: 16px;
+                padding: 16px;
+                border-radius: 8px;
+            }
+            
+            .map-search {
+                width: 100%;
+                padding: 8px;
+            }
+            
+            .shop-popup {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+        
+        /* 隠し要素 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">🍜 mogumogu</div>
+        
+        <div class="nav-toggle">
+            <button class="nav-button active" onclick="switchView('trend')">トレンド</button>
+            <button class="nav-button" onclick="switchView('search')">記事検索</button>
+            <button class="nav-button" onclick="switchView('map')">マップ</button>
+        </div>
+        
+        <div class="auth-section">
+            <button class="btn btn-secondary">ログイン</button>
+            <button class="btn btn-primary">投稿する</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <div class="main-container">
+        <!-- トレンドビュー -->
+        <div class="content-view" id="trendView">
+            
+            <!-- 人気記事セクション -->
+            <div class="popular-articles-section">
+                <h3 style="margin: 32px 0 16px; text-align: center; color: #ea580c;">🔥 今週の人気記事</h3>
+                <div class="article-grid">
+                    <!-- 人気記事1 -->
+                    <article class="article-card popular">
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=160&fit=crop&crop=center" alt="豚骨ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback-icon" style="display: none;">🍜</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">【完全保存版】二郎系ラーメン全店制覇への道</h3>
+                            <div class="article-meta">
+                                <span>jiro_master</span>
+                                <span>2024/01/10</span>
+                            </div>
+                            <div class="article-tags">
+                                <span class="tag">二郎系</span>
+                                <span class="tag">まとめ</span>
+                            </div>
+                            <div class="article-actions">
+                                <button class="action-btn">
+                                    <span>❤️</span>
+                                    <span>1,234</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>⭐</span>
+                                    <span>567</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>💬</span>
+                                    <span>89</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 人気記事2 -->
+                    <article class="article-card popular">
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&h=160&fit=crop&crop=center" alt="塩ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback-icon" style="display: none;">🍲</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">東京駅周辺の絶品塩ラーメン厳閁10店</h3>
+                            <div class="article-meta">
+                                <span>tokyo_walker</span>
+                                <span>2024/01/12</span>
+                            </div>
+                            <div class="article-tags">
+                                <span class="tag">塩</span>
+                                <span class="tag">東京駅</span>
+                            </div>
+                            <div class="article-actions">
+                                <button class="action-btn">
+                                    <span>❤️</span>
+                                    <span>856</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>⭐</span>
+                                    <span>394</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>💬</span>
+                                    <span>67</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 人気記事3 -->
+                    <article class="article-card popular">
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=160&fit=crop&crop=center" alt="辛味噌ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback-icon" style="display: none;">🥢</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">激辛ラーメン愛好家が選ぶ！本当に辛い店TOP5</h3>
+                            <div class="article-meta">
+                                <span>spicy_hunter</span>
+                                <span>2024/01/08</span>
+                            </div>
+                            <div class="article-tags">
+                                <span class="tag">辛味噌</span>
+                                <span class="tag">激辛</span>
+                            </div>
+                            <div class="article-actions">
+                                <button class="action-btn">
+                                    <span>❤️</span>
+                                    <span>723</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>⭐</span>
+                                    <span>298</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>💬</span>
+                                    <span>156</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            
+            <!-- 最新記事セクション -->
+            <div class="latest-articles-section">
+                <h3 style="margin: 32px 0 16px; text-align: center; color: #6b7280;">📝 最新の記事</h3>
+                <div class="article-grid">
+                <!-- 記事カード1 -->
+                <article class="article-card">
+                    <div class="article-image">
+                        <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=160&fit=crop&crop=center" alt="豚骨ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="fallback-icon" style="display: none;">🍜</div>
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">新宿「麺屋 田中商店」の濃厚豚骨ラーメンが絶品！</h3>
+                        <div class="article-meta">
+                            <span>ramen_lover123</span>
+                            <span>2024/01/15</span>
+                        </div>
+                        <div class="article-tags">
+                            <span class="tag">豚骨</span>
+                            <span class="tag">新宿</span>
+                        </div>
+                        <div class="article-actions">
+                            <button class="action-btn">
+                                <span>❤️</span>
+                                <span>24</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>⭐</span>
+                                <span>8</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 記事カード2 -->
+                <article class="article-card">
+                    <div class="article-image">
+                        <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&h=160&fit=crop&crop=center" alt="塩ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="fallback-icon" style="display: none;">🍲</div>
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">渋谷の隠れた名店「麺匠 さくら」の塩ラーメン</h3>
+                        <div class="article-meta">
+                            <span>tokyo_gourmet</span>
+                            <span>2024/01/14</span>
+                        </div>
+                        <div class="article-tags">
+                            <span class="tag">塩</span>
+                            <span class="tag">渋谷</span>
+                        </div>
+                        <div class="article-actions">
+                            <button class="action-btn">
+                                <span>❤️</span>
+                                <span>31</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>⭐</span>
+                                <span>12</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 記事カード3 -->
+                <article class="article-card">
+                    <div class="article-image">
+                        <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=160&fit=crop&crop=center" alt="辛味噌ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="fallback-icon" style="display: none;">🥢</div>
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">吉祥寺「龍神麺」の辛味噌ラーメン挑戦レポート</h3>
+                        <div class="article-meta">
+                            <span>spicy_fan</span>
+                            <span>2024/01/13</span>
+                        </div>
+                        <div class="article-tags">
+                            <span class="tag">辛味噌</span>
+                            <span class="tag">吉祥寺</span>
+                        </div>
+                        <div class="article-actions">
+                            <button class="action-btn">
+                                <span>❤️</span>
+                                <span>18</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>⭐</span>
+                                <span>5</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 記事カード4 -->
+                <article class="article-card">
+                    <div class="article-image">
+                        <img src="https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=400&h=160&fit=crop&crop=center" alt="醤油ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="fallback-icon" style="display: none;">🍜</div>
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">池袋ラーメン激戦区！おすすめ店舗5選</h3>
+                        <div class="article-meta">
+                            <span>ikebukuro_walker</span>
+                            <span>2024/01/12</span>
+                        </div>
+                        <div class="article-tags">
+                            <span class="tag">まとめ</span>
+                            <span class="tag">池袋</span>
+                        </div>
+                        <div class="article-actions">
+                            <button class="action-btn">
+                                <span>❤️</span>
+                                <span>45</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>⭐</span>
+                                <span>21</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+                </div>
+            </div>
+        </div>
+
+        <!-- 記事検索ビュー -->
+        <div class="content-view hidden" id="searchView">
+            <div class="search-header">
+                <h2 style="text-align: center; margin-bottom: 24px; color: #1a1a1a;">🔍 記事検索</h2>
+                
+                <!-- キーワード検索 -->
+                <div class="search-section">
+                    <div class="search-bar">
+                        <div style="position: relative;">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-input" placeholder="キーワードで検索 (店名、メニュー名など)">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ラーメン種類フィルター -->
+                <div class="filter-section">
+                    <h3 style="margin-bottom: 12px;">ラーメンの種類</h3>
+                    <div class="filter-chips">
+                        <span class="filter-chip active">すべて</span>
+                        <span class="filter-chip">醤油</span>
+                        <span class="filter-chip">塩</span>
+                        <span class="filter-chip">味噌</span>
+                        <span class="filter-chip">豚骨</span>
+                        <span class="filter-chip">二郎系</span>
+                        <span class="filter-chip">家系</span>
+                        <span class="filter-chip">つけ麺</span>
+                        <span class="filter-chip">汁なし</span>
+                        <span class="filter-chip">辛味噌</span>
+                    </div>
+                </div>
+                
+                <!-- 地域フィルター -->
+                <div class="filter-section">
+                    <h3 style="margin-bottom: 12px;">地域</h3>
+                    <div class="filter-chips">
+                        <span class="filter-chip active">すべて</span>
+                        <span class="filter-chip">新宿</span>
+                        <span class="filter-chip">渋谷</span>
+                        <span class="filter-chip">池袋</span>
+                        <span class="filter-chip">上野</span>
+                        <span class="filter-chip">秋葉原</span>
+                        <span class="filter-chip">中野</span>
+                        <span class="filter-chip">吉祥寺</span>
+                        <span class="filter-chip">神奈川</span>
+                        <span class="filter-chip">埼玉</span>
+                        <span class="filter-chip">千葉</span>
+                    </div>
+                </div>
+                
+                <!-- 並び順フィルター -->
+                <div class="filter-section">
+                    <h3 style="margin-bottom: 12px;">並び順</h3>
+                    <div class="sort-chips">
+                        <span class="filter-chip active">新しい順</span>
+                        <span class="filter-chip">人気順</span>
+                        <span class="filter-chip">いいね順</span>
+                        <span class="filter-chip">コメント順</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 検索結果 -->
+            <div class="search-results">
+                <div class="results-header">
+                    <span class="results-count">245件の記事が見つかりました</span>
+                </div>
+                <div class="article-grid">
+                    <!-- 検索結果の記事カードがここに表示される -->
+                    <article class="article-card">
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=160&fit=crop&crop=center" alt="豚骨ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback-icon" style="display: none;">🍜</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">新宿「麟山ラーメン」の濃厚豚骨が絶品！</h3>
+                            <div class="article-meta">
+                                <span>ramen_hunter</span>
+                                <span>2024/01/16</span>
+                            </div>
+                            <div class="article-tags">
+                                <span class="tag">豚骨</span>
+                                <span class="tag">新宿</span>
+                            </div>
+                            <div class="article-actions">
+                                <button class="action-btn">
+                                    <span>❤️</span>
+                                    <span>32</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>⭐</span>
+                                    <span>15</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="article-card">
+                        <div class="article-image">
+                            <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&h=160&fit=crop&crop=center" alt="塩ラーメン" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback-icon" style="display: none;">🍲</div>
+                        </div>
+                        <div class="article-content">
+                            <h3 class="article-title">二郎系マニアが選ぶ東京ベスト5店</h3>
+                            <div class="article-meta">
+                                <span>jiro_maniac</span>
+                                <span>2024/01/15</span>
+                            </div>
+                            <div class="article-tags">
+                                <span class="tag">二郎系</span>
+                                <span class="tag">まとめ</span>
+                            </div>
+                            <div class="article-actions">
+                                <button class="action-btn">
+                                    <span>❤️</span>
+                                    <span>89</span>
+                                </button>
+                                <button class="action-btn">
+                                    <span>⭐</span>
+                                    <span>43</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <!-- マップビュー -->
+        <div class="map-view hidden" id="mapView">
+            <div class="map-container">
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
+                    <div>Google Maps統合エリア</div>
+                    <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">
+                        ラーメン店の位置情報とレビューを表示
+                    </div>
+                </div>
+                
+                <!-- 地図コントロール -->
+                <div class="map-controls">
+                    <div class="map-search">
+                        <input type="text" class="search-input" placeholder="エリア、店名で検索..." style="margin-bottom: 12px;">
+                        <div class="filter-chips">
+                            <span class="filter-chip active">すべて</span>
+                            <span class="filter-chip">豚骨</span>
+                            <span class="filter-chip">塩</span>
+                            <span class="filter-chip">醤油</span>
+                            <span class="filter-chip">味噌</span>
+                            <span class="filter-chip">つけ麺</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 店舗マーカー -->
+                <div class="shop-marker marker-1" onclick="showShopPopup()">🍜</div>
+                <div class="shop-marker marker-2">🍲</div>
+                <div class="shop-marker marker-3">🥢</div>
+
+                <!-- 店舗詳細ポップアップ -->
+                <div class="shop-popup" id="shopPopup">
+                    <div class="shop-info">
+                        <div class="shop-image">
+                            <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=80&h=80&fit=crop&crop=center" alt="麺屋 田中商店" onerror="this.style.display='none'">
+                            🍜
+                        </div>
+                        <div class="shop-details">
+                            <h3>麺屋 田中商店</h3>
+                            <div class="shop-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span>4.2 (128件のレビュー)</span>
+                            </div>
+                            <p style="font-size: 14px; color: #64748b;">
+                                新宿区歌舞伎町1-1-1 | 営業中 11:00-23:00
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="shop-tabs">
+                        <button class="tab-btn active" onclick="switchTab('reviews')">レビュー</button>
+                        <button class="tab-btn" onclick="switchTab('articles')">関連記事</button>
+                        <button class="tab-btn" onclick="switchTab('info')">店舗情報</button>
+                    </div>
+                    
+                    <div class="tab-content" id="tabContent">
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-author">ramen_lover123</span>
+                                <span class="review-date">2024/01/15</span>
+                            </div>
+                            <div class="review-text">
+                                濃厚豚骨スープが絶品！チャーシューも柔らかくて最高でした。
+                            </div>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-author">tokyo_gourmet</span>
+                                <span class="review-date">2024/01/10</span>
+                            </div>
+                            <div class="review-text">
+                                新宿では間違いなくトップクラス。行列必至ですが待つ価値あり。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'trend';
+        
+        function switchView(view) {
+            const mapView = document.getElementById('mapView');
+            const buttons = document.querySelectorAll('.nav-button');
+            
+            // ボタンのアクティブ状態を更新
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // ビューを切り替え
+            const trendView = document.getElementById('trendView');
+            const searchView = document.getElementById('searchView');
+            
+            // すべてのビューを非表示に
+            trendView.className = 'content-view hidden';
+            searchView.className = 'content-view hidden';
+            mapView.className = 'map-view hidden';
+            
+            switch(view) {
+                case 'trend':
+                    trendView.className = 'content-view';
+                    break;
+                case 'search':
+                    searchView.className = 'content-view';
+                    break;
+                case 'map':
+                    mapView.className = 'map-view';
+                    break;
+            }
+            
+            currentView = view;
+        }
+        
+        function showShopPopup() {
+            const popup = document.getElementById('shopPopup');
+            popup.classList.add('visible');
+        }
+        
+        function switchTab(tab) {
+            const buttons = document.querySelectorAll('.tab-btn');
+            const content = document.getElementById('tabContent');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // タブコンテンツを更新（実際のアプリでは動的にデータを読み込み）
+            switch(tab) {
+                case 'reviews':
+                    content.innerHTML = `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-author">ramen_lover123</span>
+                                <span class="review-date">2024/01/15</span>
+                            </div>
+                            <div class="review-text">
+                                濃厚豚骨スープが絶品！チャーシューも柔らかくて最高でした。
+                            </div>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-author">tokyo_gourmet</span>
+                                <span class="review-date">2024/01/10</span>
+                            </div>
+                            <div class="review-text">
+                                新宿では間違いなくトップクラス。行列必至ですが待つ価値あり。
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'articles':
+                    content.innerHTML = `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-author">新宿「麺屋 田中商店」の濃厚豚骨ラーメンが絶品！</span>
+                            </div>
+                            <div class="review-text">
+                                実際に訪れた体験記事とおすすめメニューを紹介
+                            </div>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-author">新宿ラーメン激戦区まとめ</span>
+                            </div>
+                            <div class="review-text">
+                                田中商店を含む新宿エリアの名店特集記事
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'info':
+                    content.innerHTML = `
+                        <div style="font-size: 14px; line-height: 1.6;">
+                            <p><strong>住所:</strong> 東京都新宿区歌舞伎町1-1-1</p>
+                            <p><strong>電話:</strong> 03-1234-5678</p>
+                            <p><strong>営業時間:</strong> 11:00-23:00 (年中無休)</p>
+                            <p><strong>アクセス:</strong> JR新宿駅東口より徒歩3分</p>
+                            <p><strong>特徴:</strong> 濃厚豚骨ラーメン、チャーシュー麺が人気</p>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+        
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // モバイル対応のタッチイベントなど
+        });
+    </script>
+</body>
+</html>
