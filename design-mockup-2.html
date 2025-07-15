@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラーメンブログ & MAP - デザインモックアップ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/css/heroicons.min.css" rel="stylesheet">
+    <style>
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div id="app" class="flex flex-col h-screen">
+
+        <!-- ヘッダー -->
+        <header class="bg-white shadow-md z-10">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <h1 class="text-2xl font-bold text-orange-500">🍜 RamenQuest</h1>
+                        <div class="relative hidden md:block">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                <i class="h-5 w-5" data-feather="search"></i>
+                            </span>
+                            <input type="text" placeholder="エリア、駅名、店名で検索..." class="border rounded-full py-2 pl-10 pr-4 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- ログインしていないユーザー向けの表示 -->
+                        <div id="guest-view" class="flex items-center space-x-2">
+                            <button class="text-gray-600 hover:text-orange-500 font-semibold">ログイン</button>
+                            <button class="bg-orange-500 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 transition duration-300">会員登録</button>
+                        </div>
+                        <!-- ログインしているユーザー向けの表示 (最初は非表示) -->
+                        <div id="user-view" class="hidden items-center space-x-4">
+                            <button class="bg-green-500 text-white font-bold py-2 px-4 rounded-full hover:bg-green-600 transition duration-300 flex items-center space-x-2">
+                                <i class="h-5 w-5" data-feather="edit-3"></i>
+                                <span>記事を投稿</span>
+                            </button>
+                            <div class="relative">
+                                <img src="https://i.pravatar.cc/40?u=ryuichi" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                                <!-- ドロップダウンメニュー（実際にはJSで制御） -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <main class="flex-1 flex overflow-hidden">
+            <!-- 左パネル: 記事・店舗リスト -->
+            <div class="w-full md:w-1/3 lg:w-1/4 bg-white overflow-y-auto shadow-lg">
+                <div class="p-4 border-b">
+                    <h2 class="text-lg font-semibold">近くのラーメン店</h2>
+                    <p class="text-sm text-gray-500">現在地周辺の25件</p>
+                </div>
+                <div id="shop-list">
+                    <!-- 店舗カード (選択中) -->
+                    <div class="p-4 border-l-4 border-orange-500 bg-orange-50 cursor-pointer">
+                        <h3 class="font-bold text-lg text-orange-600">麺屋 一燈</h3>
+                        <div class="flex items-center my-1">
+                            <span class="text-yellow-400 flex">
+                                <i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5 text-gray-300" data-feather="star"></i>
+                            </span>
+                            <span class="ml-2 text-sm font-semibold">4.5 (128件)</span>
+                        </div>
+                        <p class="text-sm text-gray-600">東京都葛飾区東新小岩1-4-17</p>
+                        <p class="text-xs text-gray-500 mt-2 line-clamp-2">「濃厚魚介つけ麺が絶品。鶏の旨味が凝縮されたスープは一度食べたら忘れられない...」</p>
+                    </div>
+                    <!-- 店舗カード -->
+                    <div class="p-4 border-b hover:bg-gray-50 cursor-pointer">
+                        <h3 class="font-bold text-lg">中華そば とみ田</h3>
+                        <div class="flex items-center my-1">
+                            <span class="text-yellow-400 flex">
+                                <i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i>
+                            </span>
+                            <span class="ml-2 text-sm font-semibold">4.8 (250件)</span>
+                        </div>
+                        <p class="text-sm text-gray-600">千葉県松戸市松戸1339</p>
+                        <p class="text-xs text-gray-500 mt-2 line-clamp-2">「言わずと知れた日本のつけ麺の頂点。並んででも食べる価値あり。豚骨魚介の完成形。」</p>
+                    </div>
+                    <!-- 他の店舗カードが続く... -->
+                    <div class="p-4 border-b hover:bg-gray-50 cursor-pointer">
+                        <h3 class="font-bold text-lg">ラーメン二郎 三田本店</h3>
+                        <div class="flex items-center my-1">
+                            <span class="text-yellow-400 flex">
+                                <i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5 text-gray-300" data-feather="star"></i>
+                            </span>
+                            <span class="ml-2 text-sm font-semibold">4.2 (300件)</span>
+                        </div>
+                        <p class="text-sm text-gray-600">東京都港区三田2-16-4</p>
+                        <p class="text-xs text-gray-500 mt-2 line-clamp-2">「全てのジロリアンの聖地。独特の雰囲気と圧倒的なボリュームは唯一無二の体験。」</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右パネル: マップ -->
+            <div class="flex-1 relative">
+                <!-- Map Placeholder -->
+                <div class="absolute inset-0 bg-gray-300 flex items-center justify-center">
+                    <img src="https://storage.googleapis.com/gemini-agent-staging.appspot.com/images/2024/7/15/map-placeholder.png" class="w-full h-full object-cover" alt="Map placeholder image">
+                </div>
+
+                <!-- Map UI Elements -->
+                <div class="absolute top-4 right-4 flex flex-col space-y-2">
+                    <button class="bg-white p-2 rounded-full shadow-md"><i class="h-6 w-6 text-gray-700" data-feather="plus"></i></button>
+                    <button class="bg-white p-2 rounded-full shadow-md"><i class="h-6 w-6 text-gray-700" data-feather="minus"></i></button>
+                    <button class="bg-white p-2 rounded-full shadow-md mt-4"><i class="h-6 w-6 text-gray-700" data-feather="crosshair"></i></button>
+                </div>
+
+                <!-- 店舗情報ポップアップ -->
+                <div id="map-popup" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-80 overflow-hidden">
+                    <div class="h-32 bg-cover bg-center" style="background-image: url('https://placehold.co/400x200/E97451/FFFFFF?text=Ramen+Shop')"></div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-xl">麺屋 一燈</h3>
+                        <p class="text-sm text-gray-600 mb-2">東京都葛飾区東新小岩1-4-17</p>
+                        <div class="flex items-center my-2">
+                            <span class="text-yellow-400 flex">
+                                <i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5" data-feather="star"></i><i class="h-5 w-5 text-gray-300" data-feather="star"></i>
+                            </span>
+                            <span class="ml-2 text-sm font-semibold">4.5 (128件)</span>
+                        </div>
+                        <div class="border-t pt-3 mt-3">
+                            <h4 class="font-semibold text-sm mb-2">関連ブログ記事</h4>
+                            <a href="#" class="text-orange-600 hover:underline text-sm block">・最高の濃厚魚介つけ麺との出会い</a>
+                            <a href="#" class="text-orange-600 hover:underline text-sm block">・【再訪】限定の塩ラーメンを求めて</a>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <button class="text-gray-500 hover:text-red-500 transition-colors">
+                                <i class="h-7 w-7" data-feather="heart"></i>
+                            </button>
+                            <button class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full hover:bg-orange-600 transition duration-300">詳細を見る</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+
+        // --- モックアップ用インタラクション ---
+        // ログイン状態を切り替えるためのデモ機能
+        // 実際のアプリでは認証状態に応じてサーバーサイドでレンダリングを切り替える
+        const guestView = document.getElementById('guest-view');
+        const userView = document.getElementById('user-view');
+        
+        // 5秒後にログイン状態に切り替えるデモ
+        setTimeout(() => {
+            guestView.classList.add('hidden');
+            userView.classList.remove('hidden');
+            userView.classList.add('flex');
+        }, 5000);
+
+        // リストのアイテムをクリックしたら選択状態にするデモ
+        const shopList = document.getElementById('shop-list');
+        const items = shopList.querySelectorAll('.cursor-pointer');
+        const popup = document.getElementById('map-popup');
+
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                // すべてのアイテムから選択スタイルを削除
+                items.forEach(i => i.classList.remove('border-l-4', 'border-orange-500', 'bg-orange-50'));
+                
+                // クリックされたアイテムに選択スタイルを適用
+                item.classList.add('border-l-4', 'border-orange-500', 'bg-orange-50');
+
+                // ポップアップを表示（実際にはマップ上のマーカーに連動）
+                popup.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
