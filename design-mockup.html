@@ -735,6 +735,67 @@
                 }
             }
 
+            /* サブタブナビゲーション */
+            .sub-nav {
+                display: flex;
+                justify-content: center;
+                margin: 24px 0 32px 0;
+                background: #f8fafc;
+                border-radius: 12px;
+                padding: 6px;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .sub-nav-btn {
+                flex: 1;
+                padding: 12px 24px;
+                border: none;
+                background: transparent;
+                border-radius: 8px;
+                font-weight: 500;
+                font-size: 14px;
+                color: #64748b;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                position: relative;
+            }
+
+            .sub-nav-btn:hover {
+                color: #374151;
+                background: rgba(255, 255, 255, 0.5);
+            }
+
+            .sub-nav-btn.active {
+                background: white;
+                color: #ea580c;
+                font-weight: 600;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .sub-nav-btn.active::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 20px;
+                height: 2px;
+                background: #ea580c;
+                border-radius: 1px;
+            }
+
+            /* コンテンツセクション表示制御 */
+            .content-section {
+                display: none;
+            }
+
+            .content-section.active {
+                display: block;
+            }
+
             /* 隠し要素 */
             .hidden {
                 display: none !important;
@@ -747,8 +808,8 @@
             <div class="logo">🍜 mogumogu</div>
 
             <div class="nav-toggle">
-                <button class="nav-button active" onclick="switchView('trend')">
-                    トレンド
+                <button class="nav-button active" onclick="switchView('articles')">
+                    記事一覧
                 </button>
                 <button class="nav-button" onclick="switchView('search')">
                     記事検索
@@ -766,10 +827,22 @@
 
         <!-- メインコンテンツ -->
         <div class="main-container">
-            <!-- トレンドビュー -->
-            <div class="content-view" id="trendView">
+            <!-- 記事一覧ビュー -->
+            <div class="content-view" id="articlesView">
+                <!-- サブタブナビゲーション -->
+                <div class="sub-nav">
+                    <button class="sub-nav-btn active" onclick="switchSubTab('popular')">
+                        人気
+                    </button>
+                    <button class="sub-nav-btn" onclick="switchSubTab('following')">
+                        フォロー
+                    </button>
+                    <button class="sub-nav-btn" onclick="switchSubTab('latest')">
+                        最新
+                    </button>
+                </div>
                 <!-- 人気記事セクション -->
-                <div class="popular-articles-section">
+                <div class="content-section active" id="popularSection">
                     <h3
                         style="
                             margin: 32px 0 16px;
@@ -1017,7 +1090,7 @@
                 </div>
 
                 <!-- 最新記事セクション -->
-                <div class="latest-articles-section">
+                <div class="content-section" id="latestSection">
                     <h3
                         style="
                             margin: 32px 0 16px;
@@ -1258,6 +1331,160 @@
                                     <button class="like-btn">
                                         <span>❤️</span>
                                         <span>29</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- フォロー記事セクション -->
+                <div class="content-section" id="followingSection">
+                    <h3
+                        style="
+                            margin: 32px 0 16px;
+                            text-align: center;
+                            color: #6b7280;
+                        "
+                    >
+                        👥 フォロー中の投稿
+                    </h3>
+                    <div class="article-grid">
+                        <!-- フォロー記事1 -->
+                        <article class="article-card">
+                            <div class="article-image">
+                                <img
+                                    src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=240&fit=crop&crop=center"
+                                    alt="つけ麺"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                                />
+                                <div
+                                    class="fallback-icon"
+                                    style="display: none"
+                                >
+                                    🍜
+                                </div>
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title">
+                                    表参道の隠れ家的つけ麺店で至福のひととき
+                                </h3>
+                                <div class="article-info-row">
+                                    <div class="article-info-left">
+                                        <div class="user-avatar">👩‍🍳</div>
+                                        <div class="user-info">
+                                            <span class="article-author">noodle_queen</span>
+                                            <span class="article-date">2024/01/16</span>
+                                        </div>
+                                    </div>
+                                    <button class="like-btn">
+                                        <span>❤️</span>
+                                        <span>67</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- フォロー記事2 -->
+                        <article class="article-card">
+                            <div class="article-image">
+                                <img
+                                    src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&h=240&fit=crop&crop=center"
+                                    alt="醤油ラーメン"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                                />
+                                <div
+                                    class="fallback-icon"
+                                    style="display: none"
+                                >
+                                    🍲
+                                </div>
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title">
+                                    老舗醤油ラーメンの真髄を味わう贅沢な時間
+                                </h3>
+                                <div class="article-info-row">
+                                    <div class="article-info-left">
+                                        <div class="user-avatar">🧑‍🎨</div>
+                                        <div class="user-info">
+                                            <span class="article-author">ramen_artist</span>
+                                            <span class="article-date">2024/01/15</span>
+                                        </div>
+                                    </div>
+                                    <button class="like-btn">
+                                        <span>❤️</span>
+                                        <span>89</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- フォロー記事3 -->
+                        <article class="article-card">
+                            <div class="article-image">
+                                <img
+                                    src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=240&fit=crop&crop=center"
+                                    alt="味噌ラーメン"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                                />
+                                <div
+                                    class="fallback-icon"
+                                    style="display: none"
+                                >
+                                    🥢
+                                </div>
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title">
+                                    北海道直送！本場の味噌ラーメンレビュー
+                                </h3>
+                                <div class="article-info-row">
+                                    <div class="article-info-left">
+                                        <div class="user-avatar">👨‍🌾</div>
+                                        <div class="user-info">
+                                            <span class="article-author">hokkaido_miso</span>
+                                            <span class="article-date">2024/01/14</span>
+                                        </div>
+                                    </div>
+                                    <button class="like-btn">
+                                        <span>❤️</span>
+                                        <span>124</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- フォロー記事4 -->
+                        <article class="article-card">
+                            <div class="article-image">
+                                <img
+                                    src="https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=400&h=240&fit=crop&crop=center"
+                                    alt="辛味噌ラーメン"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                                />
+                                <div
+                                    class="fallback-icon"
+                                    style="display: none"
+                                >
+                                    🌶️
+                                </div>
+                            </div>
+                            <div class="article-content">
+                                <h3 class="article-title">
+                                    激辛好き必見！汗をかきながら食べる絶品辛味噌
+                                </h3>
+                                <div class="article-info-row">
+                                    <div class="article-info-left">
+                                        <div class="user-avatar">🔥</div>
+                                        <div class="user-info">
+                                            <span class="article-author">spicy_master</span>
+                                            <span class="article-date">2024/01/13</span>
+                                        </div>
+                                    </div>
+                                    <button class="like-btn">
+                                        <span>❤️</span>
+                                        <span>203</span>
                                     </button>
                                 </div>
                             </div>
@@ -1545,7 +1772,8 @@
         </div>
 
         <script>
-            let currentView = "trend";
+            let currentView = "articles";
+            let currentSubTab = "popular";
 
             function switchView(view) {
                 const mapView = document.getElementById("mapView");
@@ -1556,17 +1784,17 @@
                 event.target.classList.add("active");
 
                 // ビューを切り替え
-                const trendView = document.getElementById("trendView");
+                const articlesView = document.getElementById("articlesView");
                 const searchView = document.getElementById("searchView");
 
                 // すべてのビューを非表示に
-                trendView.className = "content-view hidden";
+                articlesView.className = "content-view hidden";
                 searchView.className = "content-view hidden";
                 mapView.className = "map-view hidden";
 
                 switch (view) {
-                    case "trend":
-                        trendView.className = "content-view";
+                    case "articles":
+                        articlesView.className = "content-view";
                         break;
                     case "search":
                         searchView.className = "content-view";
@@ -1577,6 +1805,35 @@
                 }
 
                 currentView = view;
+            }
+
+            function switchSubTab(subTab) {
+                const subButtons = document.querySelectorAll(".sub-nav-btn");
+                const sections = document.querySelectorAll(".content-section");
+
+                // サブタブボタンのアクティブ状態を更新
+                subButtons.forEach((btn) => btn.classList.remove("active"));
+                event.target.classList.add("active");
+
+                // すべてのセクションを非表示に
+                sections.forEach((section) => {
+                    section.classList.remove("active");
+                });
+
+                // 選択されたセクションを表示
+                switch (subTab) {
+                    case "popular":
+                        document.getElementById("popularSection").classList.add("active");
+                        break;
+                    case "following":
+                        document.getElementById("followingSection").classList.add("active");
+                        break;
+                    case "latest":
+                        document.getElementById("latestSection").classList.add("active");
+                        break;
+                }
+
+                currentSubTab = subTab;
             }
 
             function showShopPopup() {
