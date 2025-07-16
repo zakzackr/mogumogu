@@ -65,6 +65,7 @@ export async function POST(request: Request) {
             {
                 message: "ログインに成功しました",
                 user: {
+                    id: data.user.user_metadata?.id,
                     username: data.user.user_metadata?.username,
                     avatar_url: data.user.user_metadata?.avatar_url,
                     role: data.user.user_metadata?.role || "user",
