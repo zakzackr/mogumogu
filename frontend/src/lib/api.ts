@@ -152,8 +152,6 @@ export async function addStock(articleId: string | number) {
 export async function signup(
     email: string,
     password: string,
-    lastName: string,
-    firstName: string,
     username: string
 ) {
     const res = await fetch(`/api/auth/signup`, {
@@ -163,8 +161,6 @@ export async function signup(
         body: JSON.stringify({
             email,
             password,
-            lastName,
-            firstName,
             username,
         }),
     });
