@@ -35,7 +35,7 @@ export default function RegisterPage() {
 
         try {
             // 新規登録APIの呼び出し
-            await signup(email, password, lastName, firstName, username);
+            await signup(email, password, username);
             // 新規登録完了後、記事一覧表示画面に遷移
             router.push("/");
         } catch (error: unknown) {
