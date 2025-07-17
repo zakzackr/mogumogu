@@ -182,12 +182,15 @@ export async function signup(
  * @throws API通信エラー時に例外を投げる
  * @note ログイン後にCookieを受け取るために、credentials: 'include' を指定
  */
-export async function login(usernameOrEmail: string, password: string) {
+export async function login(email: string, password: string) {
+    console.log(email);
+    console.log(password);
+
     const res = await fetch(`/api/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usernameOrEmail, password }),
+        body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok) {
