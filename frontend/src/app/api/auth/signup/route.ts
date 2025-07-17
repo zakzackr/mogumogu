@@ -41,6 +41,7 @@ export async function POST(request: Request) {
             options: {
                 data: {
                     username,
+                    avatar_url: "", // 空文字で初期化
                     role: "user", // TODO: role名、adminの設定方法など確認
                 },
             },
