@@ -23,4 +23,8 @@ export const config = {
          */
         "/((?!api|_next/static|_next/image|favicon.ico).*)",
     ],
+
+    // TODO: 認証が必要なページのみ個別に設定することで、
+    // 記事一覧など認証が必要ないページへのページアクセス制御をスキップできる
+    // matcher: ['/dashboard/:path*', '/articles/new']
 };

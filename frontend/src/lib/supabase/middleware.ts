@@ -10,6 +10,9 @@ import { NextResponse, NextRequest } from "next/server";
  * リフレッシュされたアクセストークンをServer Componentにパスする
  * リフレッシュされたアクセストークンをClient Componentにパスする
  *
+ * Details:
+ * Refreshing the Auth token (by calling supabase.auth.getUser).
+ *
  * ref: https://supabase.com/docs/guides/auth/server-side/nextjs
  */
 
@@ -46,6 +49,8 @@ export async function updateSession(request: NextRequest) {
     // issues with users being randomly logged out.
 
     // IMPORTANT: DO NOT REMOVE auth.getUser()
+    // DONT USE getSession() inside Server Components.
+
     const {
         data: { user },
     } = await supabase.auth.getUser();
