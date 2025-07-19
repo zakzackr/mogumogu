@@ -52,29 +52,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // 画面リロード時などは、supabaseからユーザー情報を取得する必要ある
         const getUser = async () => {
             try {
-                const {
-                    data: { user: supabaseUser },
-                    error,
-                } = await supabase.auth.getUser();
+                const { data, error } = await supabase.auth.getClaims();
 
-                if (error) {
+                if (error || !data || !data.claims) {
                     console.error("認証エラー", error);
-                    setUser(null);
-                } else if (supabaseUser) {
-                    const appUser: AppUser = {
-                        id: supabaseUser.id,
-                        username: supabaseUser.user_metadata?.username,
-                        avatar_url: supabaseUser.user_metadata?.avatar_url,
-                        role: supabaseUser.user_metadata?.role || "user",
-                    };
+                    throw Error("JWT claims取得エラー");
+                }
 
-                    setUser(appUser);
-                } else {
+                const appUser: AppUser = {
+                    id: data.claims.sub,
+                    username: data.claims.username,
+                    avatar_url: data.claims.avatar_url,
+                    role: data.claims.role || "user",
+                };
+
+                setUser(appUser);
+            } catch (error) {
+                // getClaims()失敗時はgetUser()にフォールバック
+                try {
+                    const {
+                        data: { user },
+                        error: getUserError,
+                    } = await supabase.auth.getUser();
+
+                    if (getUserError) {
+                        console.error("ユーザー情報取得エラー:", getUserError);
+                        setUser(null);
+                    } else if (user) {
+                        const appUser: AppUser = {
+                            id: user.id,
+                            username: user.user_metadata.username,
+                            avatar_url: user.user_metadata.avatar_url,
+                            role: user.user_metadata.role || "user",
+                        };
+
+                        setUser(appUser);
+                    } else {
+                        setUser(null);
+                    }
+                } catch (fallbackError) {
+                    console.error(
+                        "getUserフォールバックエラー:",
+                        fallbackError
+                    );
                     setUser(null);
                 }
-            } catch (error) {
-                console.error("ユーザー情報取得エラー:", error);
-                setUser(null);
             } finally {
                 setIsLoading(false);
             }
@@ -110,6 +132,70 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // TODO: クリーンアップ関数実行されるタイミングないかも、、
         return () => subscription.unsubscribe();
     }, []);
+
+    // useEffect(() => {
+    //     // user情報の取得
+    //     // 画面リロード時などは、supabaseからユーザー情報を取得する必要ある
+    //     const getUser = async () => {
+    //         try {
+    //             const {
+    //                 data: { user: supabaseUser },
+    //                 error,
+    //             } = await supabase.auth.getUser();
+
+    //             if (error) {
+    //                 console.error("認証エラー", error);
+    //                 setUser(null);
+    //             } else if (supabaseUser) {
+    //                 const appUser: AppUser = {
+    //                     id: supabaseUser.id,
+    //                     username: supabaseUser.user_metadata?.username,
+    //                     avatar_url: supabaseUser.user_metadata?.avatar_url,
+    //                     role: supabaseUser.user_metadata?.role || "user",
+    //                 };
+
+    //                 setUser(appUser);
+    //             } else {
+    //                 setUser(null);
+    //             }
+    //         } catch (error) {
+    //             console.error("ユーザー情報取得エラー:", error);
+    //             setUser(null);
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
+
+    //     getUser();
+
+    //     // 認証状態の変更を監視
+    //     const {
+    //         data: { subscription },
+    //     } = supabase.auth.onAuthStateChange(
+    //         // 認証状態変更時に実行されるcallback関数
+    //         (event, session) => {
+    //             if (session?.user) {
+    //                 // ログイン状態 (SIGNED_IN, TOKEN_REFRESHEDなど全て含む)
+    //                 const appUser: AppUser = {
+    //                     id: session.user.id,
+    //                     username: session.user.user_metadata?.username || "",
+    //                     avatar_url: session.user.user_metadata.avatar_url,
+    //                     role: session.user.user_metadata.role || "user",
+    //                 };
+
+    //                 setUser(appUser);
+    //             } else {
+    //                 // 非ログイン状態 (SIGNED_OUT, 初期状態など全て含む)
+    //                 setUser(null);
+    //             }
+    //             setIsLoading(false);
+    //         }
+    //     );
+
+    //     // クリーンアップ関数により監視を停止（コンポーネントアンマウント時に実行）
+    //     // TODO: クリーンアップ関数実行されるタイミングないかも、、
+    //     return () => subscription.unsubscribe();
+    // }, []);
 
     // 非ログインユーザーが投稿、いいね機能などを使用しようとした時にログインモーダルを表示
     // ログイン完了後、投稿、いいね機能を実行
