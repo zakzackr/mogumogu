@@ -119,9 +119,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         role: session.user.user_metadata.role || "user",
                     };
 
+                    console.log("onAuthStateChange login");
                     setUser(appUser);
                 } else {
                     // 非ログイン状態 (SIGNED_OUT, 初期状態など全て含む)
+                    console.log("onAuthStateChange signout");
                     setUser(null);
                 }
                 setIsLoading(false);

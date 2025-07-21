@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
+import { createServerClient } from "@supabase/ssr";
+import { AppUser } from "@/types/user";
 
 /**
  * 認証ミドルウェア
@@ -27,8 +29,46 @@ const AUTH_PAGES = ["/login", "/signup", "/register"];
  * @returns NextResponse
  */
 export async function authMiddleware(request: NextRequest) {
-    // Supabaseセッション更新（トークンリフレッシュ）
-    const { supabaseResponse, user } = await updateSession(request);
+    let supabaseResponse = NextResponse.next({
+        request,
+    });
+
+    // supabaseクライアントの作成
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return request.cookies.getAll();
+                },
+                setAll() {
+                    // 読み取り専用設定（getClaims用）
+                },
+            },
+        }
+    );
+
+    const { data, error } = await supabase.auth.getClaims();
+    console.log(data);
+    console.log(data?.claims);
+    console.log(data?.claims.sub);
+
+    let user: AppUser | null = null;
+
+    if (error || !data || !data.claims) {
+        // Supabaseセッション更新（トークンリフレッシュ）
+        // 内部でgetUser()を呼ぶ
+        ({ supabaseResponse, user } = await updateSession(request));
+    } else {
+        // claimsからuser情報を構築
+        user = {
+            id: data.claims.sub,
+            username: data.claims.username,
+            avatar_url: data.claims.avatar_url,
+            role: data.claims.role || "user",
+        };
+    }
 
     const pathname = request.nextUrl.pathname;
 
@@ -55,3 +95,97 @@ export async function authMiddleware(request: NextRequest) {
     // セッション更新されたレスポンスを返す
     return supabaseResponse;
 }
+
+// import { type NextRequest, NextResponse } from "next/server";
+// import { updateSession } from "@/lib/supabase/middleware";
+// import { createServerClient } from "@supabase/ssr";
+// import { AppUser } from "@/types/user";
+
+// /**
+//  * Authentication middleware
+//  * Controls access to protected pages and handles redirects based on authentication state.
+//  */
+
+// /**
+//  * Paths that require authentication.
+//  */
+// const PROTECTED_PATHS = [
+//     "/dashboard",
+//     "/profile",
+//     "/articles/new",
+//     "/articles/edit",
+// ];
+
+// /**
+//  * Paths inaccessible to authenticated users.
+//  */
+// const AUTH_PAGES = ["/login", "/signup", "/register"];
+
+// /**
+//  * Main authentication middleware handler.
+//  * @param request - Incoming NextRequest object.
+//  * @returns NextResponse - Response after handling authentication logic.
+//  */
+// export async function authMiddleware(request: NextRequest) {
+//     let supabaseResponse = NextResponse.next({
+//         request,
+//     });
+
+//     // Create Supabase server-side client
+//     const supabase = createServerClient(
+//         process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//         {
+//             cookies: {
+//                 getAll() {
+//                     return request.cookies.getAll();
+//                 },
+//                 setAll() {
+//                     // Read-only setting (for getClaims)
+//                 },
+//             },
+//         }
+//     );
+
+//     const { data, error } = await supabase.auth.getClaims();
+//     let user: AppUser | null = null;
+
+//     if (error || !data || !data.claims) {
+//         // Refresh Supabase session (token refresh)
+//         // Internally calls getUser()
+//         ({ supabaseResponse, user } = await updateSession(request));
+//     } else {
+//         // Construct user object from claims
+//         user = {
+//             id: data.claims.sub,
+//             username: data.claims.username,
+//             avatar_url: data.claims.avatar_url,
+//             role: data.claims.role || "user",
+//         };
+//     }
+
+//     const pathname = request.nextUrl.pathname;
+
+//     // Access control for protected pages
+//     if (PROTECTED_PATHS.some((path) => pathname.startsWith(path))) {
+//         if (!user) {
+//             // If not authenticated, redirect to login page
+//             const redirectUrl = new URL("/login", request.url);
+//             // Redirect back to the original page after login
+//             redirectUrl.searchParams.set("redirect", pathname);
+//             return NextResponse.redirect(redirectUrl);
+//         }
+//     }
+
+//     // Access control for auth pages (authenticated users)
+//     if (AUTH_PAGES.includes(pathname)) {
+//         if (user) {
+//             // If already authenticated, redirect to homepage
+//             // TODO: Change to '/dashboard' after dashboard page creation
+//             return NextResponse.redirect(new URL("/", request.url));
+//         }
+//     }
+
+//     // Return response with potentially updated session
+//     return supabaseResponse;
+// }
