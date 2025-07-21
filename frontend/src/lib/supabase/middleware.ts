@@ -1,5 +1,64 @@
+import { AppUser } from "@/types/user";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, NextRequest } from "next/server";
+
+// export async function updateSession(request: NextRequest) {
+//     let supabaseResponse = NextResponse.next({
+//         request,
+//     });
+
+//     const supabase = createServerClient(
+//         process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//         {
+//             cookies: {
+//                 getAll() {
+//                     return request.cookies.getAll();
+//                 },
+//                 setAll(cookiesToSet) {
+//                     cookiesToSet.forEach(({ name, value, options }) =>
+//                         request.cookies.set(name, value)
+//                     );
+//                     supabaseResponse = NextResponse.next({
+//                         request,
+//                     });
+//                     cookiesToSet.forEach(({ name, value, options }) =>
+//                         supabaseResponse.cookies.set(name, value, options)
+//                     );
+//                 },
+//             },
+//         }
+//     );
+
+//     const { data, error } = await supabase.auth.getClaims();
+
+//     let appUser: AppUser;
+
+//     if (error || !data || !data.claims) {
+//         // getClaims()失敗時のみgetUser()実行
+//         // (トークンリフレッシュ + セッション検証)
+
+//         const {
+//             data: { user },
+//         } = await supabase.auth.getUser();
+
+//         appUser = {
+
+//         }
+
+//         return { supabaseResponse, user };
+//     } else {}
+
+//     // 成功: claimsからuser情報を構築
+//     user: AppUser = {
+//         id: data.claims.sub,
+//         username: data.claims.username,
+//         avatar_url: data.claims.avatar_url,
+//         role: data.claims.role || "user",
+//     };
+
+//     return { supabaseResponse, user };
+// }
 
 /**
  * Supabaseクライアント（ミドルウェア）
@@ -16,7 +75,9 @@ import { NextResponse, NextRequest } from "next/server";
  * ref: https://supabase.com/docs/guides/auth/server-side/nextjs
  */
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(
+    request: NextRequest
+): Promise<{ supabaseResponse: NextResponse; user: AppUser | null }> {
     let supabaseResponse = NextResponse.next({
         request,
     });
@@ -55,6 +116,18 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+        console.log("!user");
+        return { supabaseResponse, user: null };
+    }
+
+    const appUser: AppUser = {
+        id: user.id,
+        username: user.user_metadata?.username,
+        avatar_url: user.user_metadata?.avatar_url,
+        role: user.user_metadata?.role || "user",
+    };
+
     // IMPORTANT: You *must* return the supabaseResponse object as it is.
     // If you're creating a new response object with NextResponse.next() make sure to:
     // 1. Pass the request in it, like so:
@@ -68,5 +141,5 @@ export async function updateSession(request: NextRequest) {
     // If this is not done, you may be causing the browser and server to go out
     // of sync and terminate the user's session prematurely!
 
-    return { supabaseResponse, user };
+    return { supabaseResponse, user: appUser };
 }

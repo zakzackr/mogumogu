@@ -13,18 +13,7 @@ export async function middleware(request: NextRequest) {
  * ミドルウェアを適用するパスの設定
  */
 export const config = {
-    matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - api (API routes)
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         */
-        "/((?!api|_next/static|_next/image|favicon.ico).*)",
-    ],
-
-    // TODO: 認証が必要なページのみ個別に設定することで、
-    // 記事一覧など認証が必要ないページへのページアクセス制御をスキップできる
-    // matcher: ['/dashboard/:path*', '/articles/new']
+    // TODO: 認証が必要なページのみ個別に設定
+    // 記事編集画面 etc...
+    matcher: ["/dashboard/:path*", "/articles/new", "/profile/:path*"],
 };
