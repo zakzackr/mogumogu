@@ -2,64 +2,6 @@ import { AppUser } from "@/types/user";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, NextRequest } from "next/server";
 
-// export async function updateSession(request: NextRequest) {
-//     let supabaseResponse = NextResponse.next({
-//         request,
-//     });
-
-//     const supabase = createServerClient(
-//         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-//         {
-//             cookies: {
-//                 getAll() {
-//                     return request.cookies.getAll();
-//                 },
-//                 setAll(cookiesToSet) {
-//                     cookiesToSet.forEach(({ name, value, options }) =>
-//                         request.cookies.set(name, value)
-//                     );
-//                     supabaseResponse = NextResponse.next({
-//                         request,
-//                     });
-//                     cookiesToSet.forEach(({ name, value, options }) =>
-//                         supabaseResponse.cookies.set(name, value, options)
-//                     );
-//                 },
-//             },
-//         }
-//     );
-
-//     const { data, error } = await supabase.auth.getClaims();
-
-//     let appUser: AppUser;
-
-//     if (error || !data || !data.claims) {
-//         // getClaims()失敗時のみgetUser()実行
-//         // (トークンリフレッシュ + セッション検証)
-
-//         const {
-//             data: { user },
-//         } = await supabase.auth.getUser();
-
-//         appUser = {
-
-//         }
-
-//         return { supabaseResponse, user };
-//     } else {}
-
-//     // 成功: claimsからuser情報を構築
-//     user: AppUser = {
-//         id: data.claims.sub,
-//         username: data.claims.username,
-//         avatar_url: data.claims.avatar_url,
-//         role: data.claims.role || "user",
-//     };
-
-//     return { supabaseResponse, user };
-// }
-
 /**
  * Supabaseクライアント（ミドルウェア）
  * Server ComponentからはCookieに書き込みできないので、middlewareでトークンのリフレッシュを行い保存する。
@@ -112,20 +54,22 @@ export async function updateSession(
     // IMPORTANT: DO NOT REMOVE auth.getUser()
     // DONT USE getSession() inside Server Components.
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getClaims();
 
-    if (!user) {
-        console.log("!user");
+    if (error || !data || !data.claims) {
+        // TODO: might need to call getUser() to refresh the session if getClaims doesn't
+        // const {
+        //     data: { user },
+        // } = await supabase.auth.getUser();
+
         return { supabaseResponse, user: null };
     }
 
     const appUser: AppUser = {
-        id: user.id,
-        username: user.user_metadata?.username,
-        avatar_url: user.user_metadata?.avatar_url,
-        role: user.user_metadata?.role || "user",
+        id: data.claims.id,
+        username: data.claims.username,
+        avatar_url: data.claims.avatar_url,
+        role: data.claims.role || "user",
     };
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.
@@ -143,3 +87,62 @@ export async function updateSession(
 
     return { supabaseResponse, user: appUser };
 }
+
+// export async function updateSession(request: NextRequest) {
+//     let supabaseResponse = NextResponse.next({
+//         request,
+//     });
+
+//     const supabase = createServerClient(
+//         process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//         {
+//             cookies: {
+//                 getAll() {
+//                     return request.cookies.getAll();
+//                 },
+//                 setAll(cookiesToSet) {
+//                     cookiesToSet.forEach(({ name, value, options }) =>
+//                         request.cookies.set(name, value)
+//                     );
+//                     supabaseResponse = NextResponse.next({
+//                         request,
+//                     });
+//                     cookiesToSet.forEach(({ name, value, options }) =>
+//                         supabaseResponse.cookies.set(name, value, options)
+//                     );
+//                 },
+//             },
+//         }
+//     );
+
+//     const { data, error } = await supabase.auth.getClaims();
+
+//     let appUser: AppUser;
+
+//     if (error || !data || !data.claims) {
+//         // getClaims()失敗時のみgetUser()実行
+//         // (トークンリフレッシュ + セッション検証)
+
+//         const {
+//             data: { user },
+//         } = await supabase.auth.getUser();
+
+//         appUser = {
+
+//         }
+
+//         return { supabaseResponse, user };
+//     } else {
+
+//         // 成功: claimsからuser情報を構築
+//         user: AppUser = {
+//         id: data.claims.sub,
+//         username: data.claims.username,
+//         avatar_url: data.claims.avatar_url,
+//         role: data.claims.role || "user",
+//     };
+//     }
+
+//     return { supabaseResponse, user };
+// }
