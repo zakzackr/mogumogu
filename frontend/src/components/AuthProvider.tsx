@@ -66,6 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     role: data.claims.role || "user",
                 };
 
+                console.log("getClaims success!!");
+
                 setUser(appUser);
             } catch (error) {
                 // getClaims()失敗時はgetUser()にフォールバック
